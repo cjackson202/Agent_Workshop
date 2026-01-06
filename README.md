@@ -4,7 +4,7 @@ Welcome to the **Azure AI Agent Workshop**! This hands-on training teaches you h
 
 ## 🎯 Workshop Overview
 
-This workshop is divided into two complementary modules:
+This workshop is divided into three complementary modules:
 
 ### **Module 1: Azure AI Foundry Agents** (Portal Experience)
 Learn to create agents in Azure AI Foundry portal using no-code/low-code approaches.
@@ -17,6 +17,12 @@ Learn to connect MCP tools with Microsoft Agent Framework and Azure AI Foundry a
 - **Duration:** ~90 minutes
 - **Level:** Intermediate
 - **Focus:** MCP integration with Foundry, Agent Framework, custom tool development
+
+### **Module 3: Multi-Agent Orchestration** (Advanced Workflows)
+Learn to coordinate multiple AI agents using Microsoft Agent Framework orchestration patterns.
+- **Duration:** ~60 minutes
+- **Level:** Intermediate to Advanced
+- **Focus:** Group chat, sequential pipelines, handoff routing, agent collaboration
 
 ## 📚 What You'll Build
 
@@ -33,6 +39,14 @@ Programmatic integration with Microsoft Agent Framework:
 - ✅ Use Microsoft Agent Framework for orchestration
 - ✅ Test and debug MCP-Foundry integration locally
 - ✅ Deploy production-ready agent workflows
+
+### Multi-Agent Orchestrations (Module 3)
+Coordinate multiple AI agents for complex workflows:
+- ✅ Build collaborative research teams with group chat
+- ✅ Create sequential processing pipelines
+- ✅ Implement dynamic agent handoff for customer support
+- ✅ Design agents with specialized tools and expertise
+- ✅ Manage multi-turn conversations with approval workflows
 
 ## 🚀 Getting Started
 
@@ -60,6 +74,15 @@ Programmatic integration with Microsoft Agent Framework:
 │  ├─ Exercise 2: Create MCP server (30 min)         │
 │  ├─ Exercise 3: Connect to agent (20 min)          │
 │  └─ Exercise 4: Test integration (10 min)          │
+└─────────────────┬───────────────────────────────────┘
+                  │ Add custom tools!
+                  ▼
+┌─────────────────────────────────────────────────────┐
+│  Module 3: Multi-Agent Orchestration (Advanced)    │
+│  ├─ Demo 1: Group chat orchestration (20 min)      │
+│  ├─ Demo 2: Sequential pipelines (15 min)          │
+│  ├─ Demo 3: Handoff routing (20 min)               │
+│  └─ Experiment: Customize workflows (5 min)        │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -112,15 +135,46 @@ Programmatic integration with Microsoft Agent Framework:
 
 ---
 
+### Module 3: Multi-Agent Orchestration
+
+**Location:** [`Multi_Agent_Demo/`](Multi_Agent_Demo/)
+
+**What you'll learn:**
+- Understanding **orchestration patterns** for multi-agent systems
+- Building **group chat** workflows for collaborative tasks
+- Creating **sequential pipelines** for step-by-step processing
+- Implementing **handoff patterns** for dynamic agent routing
+- Designing agents with specialized tools and expertise
+- Managing **Human-in-the-Loop** (HITL) approval workflows
+- Using custom executors for non-LLM processing
+- Best practices for multi-agent coordination
+
+**Three Complete Demos:**
+1. **Group Chat** - Collaborative research team (Researcher, Writer, FactChecker)
+2. **Sequential** - Content pipeline (Writer → Reviewer → Editor)
+3. **Handoff** - Customer support routing (Triage → Specialists)
+
+**Key Files:**
+- [README.md](Multi_Agent_Demo/README.md) - Complete demo guide
+- [Group_Chat/agent_groupchat.py](Multi_Agent_Demo/Group_Chat/agent_groupchat.py) - Group chat demo
+- [Sequential/agent_sequential.py](Multi_Agent_Demo/Sequential/agent_sequential.py) - Sequential demo
+- [Handoff/agent_handoff.py](Multi_Agent_Demo/Handoff/agent_handoff.py) - Handoff demo
+
+**Start Here:** [Multi_Agent_Demo/README.md](Multi_Agent_Demo/README.md)
+
+---
+
 ## 🎓 Learning Path
 
 ### Recommended Order
 
-**Complete Both Modules (Recommended):**
+**Complete All Modules (Recommended):**
 1. Start with **Module 1** to understand agents in the portal
 2. Create your agent with File Search and Bing Grounding
 3. Proceed to **Module 2** to add custom tools programmatically
 4. Connect your MCP server to the agent you created
+5. Explore **Module 3** to learn multi-agent orchestration patterns
+6. Build collaborative agent systems with specialized roles
 
 **Portal Experience Only:**
 - Complete **Module 1** for no-code/low-code agent creation
@@ -130,6 +184,11 @@ Programmatic integration with Microsoft Agent Framework:
 - Skip to **Module 2** if you already have a Foundry agent
 - Focuses on programmatic access and custom tool development
 - Best for developers and engineers
+
+**Advanced Orchestration:**
+- Jump to **Module 3** if you understand Agent Framework basics
+- Learn group chat, sequential, and handoff patterns
+- Ideal for architects designing complex agent systems
 
 ## 📊 Workshop Architecture
 
@@ -179,10 +238,41 @@ python -m venv .venv
 source .venv/bin/activate
 
 # Install dependencies
-pip install -r requirements.txt
+pip install -r requirements.txt --pre
 
 # Login to Azure (for authentication)
 az login
+
+# Or use managed identity (for Azure ML workspace)
+az login --identity
+```
+
+### Module 3 Setup (10 minutes)
+```bash
+# Navigate to Multi_Agent_Demo directory
+cd Multi_Agent_Demo/
+
+# Create Python virtual environment
+python -m venv .venv
+
+# Activate virtual environment
+# Windows:
+.venv\Scripts\activate
+# macOS/Linux:
+source .venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Configure environment (create .env file)
+# AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
+# AZURE_OPENAI_CHAT_DEPLOYMENT_NAME=gpt-4o
+
+# Login to Azure (for authentication)
+az login
+
+# Or use managed identity (for Azure ML workspace)
+az login --identity
 ```
 
 ## 📚 Additional Resources
@@ -194,6 +284,10 @@ az login
 - [Using MCP with Foundry Agents](https://learn.microsoft.com/agent-framework/user-guide/model-context-protocol/using-mcp-with-foundry-agents)
 - [MCP Specification](https://spec.modelcontextprotocol.io/)
 - [MCP for Beginners (Microsoft)](https://github.com/microsoft/mcp-for-beginners)
+- [Orchestration Patterns Overview](https://learn.microsoft.com/agent-framework/user-guide/workflows/orchestrations/overview)
+- [Group Chat Orchestration](https://learn.microsoft.com/agent-framework/user-guide/workflows/orchestrations/group-chat)
+- [Sequential Orchestration](https://learn.microsoft.com/agent-framework/user-guide/workflows/orchestrations/sequential)
+- [Handoff Orchestration](https://learn.microsoft.com/agent-framework/user-guide/workflows/orchestrations/handoff)
 
 ### Workshop References
 - [Azure AI Foundry Tools Overview](https://learn.microsoft.com/azure/ai-foundry/agents/how-to/tools-classic/overview)
@@ -217,8 +311,14 @@ az login
 
 **Module 2:**
 - **Python dependency errors?** → Ensure Python 3.10+ and virtual environment activated
-- **Authentication fails?** → Run `az login` and verify subscription access
+- **Authentication fails?** → Run `az login` (or `az login --identity` in Azure ML workspace)
 - **MCP server won't start?** → Check port 5000 is available
+
+**Module 3:**
+- **Azure OpenAI errors?** → Set AZURE_OPENAI_ENDPOINT and AZURE_OPENAI_CHAT_DEPLOYMENT_NAME
+- **Agent not responding?** → Check deployment quota and throttling limits
+- **Import errors?** → Install agent-framework: `pip install agent-framework`
+- **Authentication fails?** → Run `az login` (or `az login --identity` in Azure ML workspace)
 
 See individual module READMEs for detailed troubleshooting.
 
@@ -234,7 +334,12 @@ By the end of this workshop, you will:
 - ✅ Build and test custom MCP servers
 - ✅ Use Agent Framework for MCP orchestration
 - ✅ Test and debug MCP-Foundry integration
-- ✅ Understand authentication patterns (Managed Identity, Azure CLI)
+- ✅ Understand authentication patterns (Managed Identity, Azure CLI, Azure ML workspace)
+- ✅ Design and implement **multi-agent orchestration** patterns
+- ✅ Build **group chat**, **sequential**, and **handoff** workflows
+- ✅ Create agents with specialized tools and expertise
+- ✅ Implement Human-in-the-Loop (HITL) approval workflows
+- ✅ Coordinate multiple agents for complex real-world scenarios
 
 ## 📝 Feedback
 
@@ -256,13 +361,18 @@ This workshop content is provided for educational purposes.
 
 1. **Begin with Module 1:** [Azure_AI_Foundry_Agents/README.md](Azure_AI_Foundry_Agents/README.md)
 2. **Continue to Module 2:** [MCP/README.md](MCP/README.md)
+3. **Explore Module 3:** [Multi_Agent_Demo/README.md](Multi_Agent_Demo/README.md)
 
 **Have an existing agent?**
 - Jump straight to: [MCP/README.md](MCP/README.md)
 
+**Want to learn multi-agent patterns?**
+- Skip to: [Multi_Agent_Demo/README.md](Multi_Agent_Demo/README.md)
+
 **Questions before starting?**
 - Review [Azure_AI_Foundry_Agents/docs/QUICKSTART.md](Azure_AI_Foundry_Agents/docs/QUICKSTART.md)
 - Check [MCP/QUICKSTART.md](MCP/QUICKSTART.md)
+- See [Multi_Agent_Demo/README.md](Multi_Agent_Demo/README.md)
 
 ---
 

@@ -5,8 +5,8 @@ from azure.identity.aio import ClientSecretCredential
 import os
 
 # # Required environment variables
-os.environ["AZURE_AI_PROJECT_ENDPOINT"] = "https://camerjackson-9533-resource.services.ai.azure.com/api/projects/camerjackson-9533"
-os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"] = "gpt-4o-mini"
+os.environ["AZURE_AI_PROJECT_ENDPOINT"] = "https://<ai_foundry_resource>.services.ai.azure.com/api/projects/<project_name>"
+os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"] = "your-model-deployment-name"
 
 # # Service Principal credentials (set these environment variables)
 # # Create SP in commercial Azure: az ad sp create-for-rbac --name "aml-to-ai-foundry" --role "Azure AI Developer" --scopes /subscriptions/<sub-id>/resourceGroups/<rg>/providers/Microsoft.CognitiveServices/accounts/<ai-project>
@@ -15,7 +15,7 @@ CLIENT_ID = os.environ.get("AZURE_CLIENT_ID")  # Service principal app ID
 CLIENT_SECRET = os.environ.get("AZURE_CLIENT_SECRET")  # Service principal password
 
 # # Existing agent ID - replace with your actual agent ID
-AGENT_ID = "asst_eYpiTqBHuOqdN1gVdzK1cOWX"  # Replace with your agent ID from AI Foundry
+AGENT_ID = "your-agent-id"  # ← REPLACE THIS with your agent ID from the portal
 
 # # Debug: Print to verify env vars are set
 print(f"TENANT_ID: {TENANT_ID}")
