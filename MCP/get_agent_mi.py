@@ -1,24 +1,29 @@
 """
-Retrieve Existing Azure AI Foundry Agent with MCP Tools
-========================================================
+Connect to Azure AI Foundry Agent with MCP Tools
+=================================================
 
-This script retrieves an EXISTING Azure AI Foundry agent (by ID) and adds
-MCP tools to it. Use this instead of create_agent_mi.py when you want to
-reuse an agent you've already created.
+This script connects to an Azure AI Foundry agent (created in the portal) 
+and adds your custom MCP tools to it, allowing the agent to use your 
+local MCP server capabilities.
 
 Prerequisites:
-1. An existing agent (created by create_agent_mi.py or in Azure portal)
-2. The agent's ID (found in create script output or Azure portal)
+1. An existing agent created in Azure AI Foundry portal
+2. The agent's ID (copy from portal: Agents → Your Agent → Agent ID)
 3. MCP server running (python server.py in another terminal)
 4. Azure CLI authenticated (az login)
 
 Workshop Usage:
-1. Copy your agent ID from the create_agent_mi.py output or Azure portal
-2. Update AGENT_ID variable below
+1. First, create your agent in Azure AI Foundry portal:
+   - Go to Azure AI Foundry Studio
+   - Navigate to "Agents" section
+   - Click "Create Agent"
+   - Give it a name and instructions
+   - Copy the Agent ID
+2. Update AGENT_ID variable below with your agent's ID
 3. Update Azure project environment variables
 4. Make sure server.py is running (in a separate terminal)
 5. Run this script: python get_agent_mi.py
-6. Start chatting with your existing agent!
+6. Start chatting with your agent using your MCP tools!
 """
 
 import asyncio
@@ -34,19 +39,20 @@ import os
 
 # Required: Your Azure AI Foundry project endpoint
 # Find this in Azure AI Foundry Studio → Project Settings
-os.environ["AZURE_AI_PROJECT_ENDPOINT"] = "https://YOUR-PROJECT.services.ai.azure.com/api/projects/YOUR-PROJECT-NAME"
+os.environ["AZURE_AI_PROJECT_ENDPOINT"] = "https://<ai_foundry_resource>.services.ai.azure.com/api/projects/<project_name>"
 
 # Required: Your model deployment name
-os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"] = "gpt-4o-mini"
+os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"] = "your-model-deployment-name"
 
 # Required: Your existing agent ID
-# Get this from:
-# 1. Output of create_agent_mi.py (look for "Agent ID: asst_xxxxx")
-# 2. Azure AI Foundry Studio → Agents → Your Agent → Copy ID
-AGENT_ID = "asst_N22njo9VdpIH29OqPiN4CJIA"  # ← REPLACE THIS with your agent ID
+# Get this from Azure AI Foundry Studio:
+# 1. Navigate to "Agents" in the left sidebar
+# 2. Click on your agent
+# 3. Copy the Agent ID from the details
+AGENT_ID = "your-agent-id"  # ← REPLACE THIS with your agent ID from the portal
 
 # Example:
-# os.environ["AZURE_AI_PROJECT_ENDPOINT"] = "https://camerjackson-9533-resource.services.ai.azure.com/api/projects/camerjackson-9533"
+# os.environ["AZURE_AI_PROJECT_ENDPOINT"] = "https://mcpworkshopdemo0000.services.ai.azure.com/api/projects/proj1"
 # os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"] = "gpt-4o-mini"
 # AGENT_ID = "asst_abc123xyz456"
 # ============================================================================
@@ -65,13 +71,16 @@ async def main():
     """
     async with AzureCliCredential() as credential:
         # ===================================================================
-        # STEP 1: Get Existing Agent
+        # STEP 1: Connect to Your Agent
         # ===================================================================
-        # Connect to an existing agent by ID instead of creating a new one
-        # This is useful for:
-        # - Reusing agents across sessions
-        # - Production deployments
-        # - Avoiding duplicate agents
+        # Connect to the agent you created in Azure AI Foundry portal
+        # This allows you to add your custom MCP tools to an existing agent
+        # 
+        # Benefits of this approach:
+        # - See and manage your agent in the Azure portal
+        # - Reuse the same agent across multiple sessions
+        # - Update agent settings in the portal UI
+        # - Production-ready deployment pattern
         
         chat_client = AzureAIAgentClient(
             credential=credential,

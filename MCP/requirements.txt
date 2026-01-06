@@ -1,3 +1,5 @@
 uvicorn
 mcp[cli]
 agent-framework
+azure-ai-projects
+azure-identity

@@ -38,22 +38,32 @@ python test_mcp.py
 
 ✅ You should see: List of tools and test results
 
-### 4️⃣ Configure Azure Settings (1 min)
+### 4️⃣ Create Agent in Portal & Configure Script (2 min)
 
-Open [create_agent_mi.py](create_agent_mi.py) and update:
+**Create agent in Azure AI Foundry Studio:**
+1. Go to [ai.azure.com](https://ai.azure.com)
+2. Navigate to your project → Agents
+3. Click "Create Agent"
+4. Name: "Workshop_MCP_Agent"
+5. Instructions: "You answer questions by using the available tools only."
+6. Model: Select your gpt-4o-mini deployment
+7. **Copy the Agent ID**
+
+**Update [get_agent_mi.py](get_agent_mi.py):**
 - `AZURE_AI_PROJECT_ENDPOINT` → Your project URL
 - `AZURE_AI_MODEL_DEPLOYMENT_NAME` → Your model name
+- `AGENT_ID` → The Agent ID you just copied
 
-Find these in Azure AI Foundry Studio → Project Settings
+Find project URL in Azure AI Foundry Studio → Project Settings
 
-### 5️⃣ Run Your First Agent (2 min)
+### 5️⃣ Connect to Your Agent (2 min)
 
 **Make sure Terminal 1 (server) is still running!**
 
 **Terminal 2:**
 ```bash
 source .venv/bin/activate
-python create_agent_mi.py
+python get_agent_mi.py
 ```
 
 Try these prompts:
@@ -122,16 +132,12 @@ Part 2: Testing Locally (20 min)
 └── Verify tools work
 
 Part 3: Azure Integration (25 min)
-├── Create agent with create_agent_mi.py
-├── Chat with the agent
-└── Observe tool invocations
+├── Create agent in Azure portal
+├── Configure get_agent_mi.py
+├── Connect agent to MCP
+└── Chat and observe tools
 
-Part 4: Reusing Agents (20 min)
-├── Save agent ID
-├── Use get_agent_mi.py
-└── Compare create vs retrieve
-
-Part 5: Advanced Topics (20 min)
+Part 4: Advanced Topics (20 min)
 ├── Add custom tools
 ├── Test with agent
 └── Explore resources
@@ -155,8 +161,8 @@ Part 5: Advanced Topics (20 min)
 5. Demonstrate live debugging of tool invocations
 
 ### Common Workshop Questions
-- **Q: Why use MCP instead of direct tool calls?**
-  - A: MCP provides standardization, security boundaries, and easy tool discovery
+- **Q: Why create the agent in the portal instead of via code?**
+  - A: Portal-created agents are visible in the UI, easier to manage, and follow production patterns
 
 - **Q: Can agents call multiple tools in sequence?**
   - A: Yes! The agent framework handles tool chaining automatically

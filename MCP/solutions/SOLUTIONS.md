@@ -372,7 +372,8 @@ python test_mcp.py
 
 ```powershell
 # Make sure server is running
-python create_agent_mi.py
+# First create agent in Azure portal, then:
+python get_agent_mi.py
 
 # Try prompts:
 You: What is 25% of 80?

@@ -46,8 +46,7 @@ MCP/
 ├── requirements.txt       # Python dependencies
 ├── server.py              # 🔧 MCP server (you'll run this)
 ├── test_mcp.py            # 🔧 Local testing client
-├── create_agent_mi.py     # 🔧 Create Azure AI agent
-├── get_agent_mi.py        # 🔧 Use existing agent
+├── get_agent_mi.py        # 🔧 Connect to your portal agent
 ├── docs/                  # 📚 Facilitator materials
 │   ├── FACILITATOR_GUIDE.md
 │   ├── SLIDES_OUTLINE.md
@@ -71,6 +70,9 @@ MCP/
 **Important:** We're using Azure ML Notebooks for this workshop. Create a virtual environment first:
 
 ```bash
+# Navigate to /MCP
+cd MCP
+
 # Create virtual environment
 python -m venv .venv
 
@@ -103,7 +105,7 @@ az login --identity
 
 **Update Azure Settings:**
 
-1. Open [create_agent_mi.py](create_agent_mi.py)
+1. Open [get_agent_mi.py](get_agent_mi.py)
 2. Update these environment variables with your values:
 
 ```python
@@ -111,7 +113,19 @@ os.environ["AZURE_AI_PROJECT_ENDPOINT"] = "https://YOUR-PROJECT.services.ai.azur
 os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"] = "gpt-4o-mini"
 ```
 
-3. Update the same values in [get_agent_mi.py](get_agent_mi.py)
+**Create Your Agent in the Portal:**
+
+1. Go to [Azure AI Foundry Studio](https://ai.azure.com)
+2. Navigate to your project
+3. Click "Agents" in the left sidebar
+4. Click "Create Agent"
+5. Configure your agent:
+   - **Name:** "Workshop_MCP_Agent" (or your choice)
+   - **Instructions:** "You are an intelligent Math Professor at University of Scholars. You are very humorous and friendly. Use the tools provided to you to help users."
+   - **Model:** Select your model deployment
+6. Click "Create"
+7. **Copy the Agent ID** from the agent details page
+8. Paste the Agent ID into [get_agent_mi.py](get_agent_mi.py) in the `AGENT_ID` variable
 
 > **Authentication Note:** We're using Azure CLI Managed Identity authentication in Azure ML Notebooks. The `az login --identity` command authenticates using the notebook's managed identity.
 
@@ -243,28 +257,36 @@ If you added the `multiply` tool in Exercise 1.2, you should see it listed in th
 
 ---
 
-### Exercise 3: Create an Azure AI Foundry Agent with MCP (25 mins)
+### Exercise 3: Connect Your Portal Agent to MCP (25 mins)
 
-**Goal:** Connect your local MCP server to an Azure AI Foundry agent.
+**Goal:** Connect the agent you created in Azure AI Foundry portal to your local MCP server.
 
-#### 3.1 Understand the Agent Creation Script
+#### 3.1 Verify Your Portal Agent
 
-Review [create_agent_mi.py](create_agent_mi.py):
+1. Go to [Azure AI Foundry Studio](https://ai.azure.com)
+2. Navigate to your project → Agents
+3. Confirm your agent is listed
+4. Click on your agent to view details
+5. **Copy the Agent ID** (starts with "asst_")
+
+#### 3.2 Understand the Connection Script
+
+Review [get_agent_mi.py](get_agent_mi.py):
 
 **Key Components:**
 1. **Authentication:** Uses Azure CLI credentials (Managed Identity)
-2. **MCP Tool Configuration:** Points to your local MCP server
+2. **Agent Connection:** Connects to your portal agent by ID
+3. **MCP Tool Configuration:** Adds your local MCP server to the agent
    ```python
    mcp_tool = MCPStreamableHTTPTool(
-       name="Custom MCP Server2",
+       name="Custom MCP Server",
        url="http://localhost:8080/mcp",
        chat_client=chat_client
    )
    ```
-3. **Agent Creation:** Creates an agent with instructions and tools
 4. **Interactive Loop:** Allows you to chat with the agent
 
-#### 3.2 Create Your Agent
+#### 3.3 Connect Your Agent to MCP
 
 **Make sure your MCP server is still running**, then in a new terminal:
 
@@ -272,7 +294,7 @@ Review [create_agent_mi.py](create_agent_mi.py):
 # Activate virtual environment
 source .venv/bin/activate
 cd /path/to/ERM_Agents_Workshop/MCP
-python create_agent_mi.py
+python get_agent_mi.py
 ```
 
 **Expected Output:**
@@ -325,70 +347,7 @@ User Input → Azure AI Agent → MCP Server (localhost:8080) → Tool Execution
 
 ---
 
-### Exercise 4: Retrieving and Reusing Existing Agents (20 mins)
-
-**Goal:** Learn how to retrieve and reuse agents you've already created.
-
-#### 4.1 Find Your Agent ID
-
-When you ran `create_agent_mi.py`, the agent was created in Azure AI Foundry. To find its ID:
-
-**Option 1: From the Script Output**
-- Look for output like: `Agent ID: asst_xxxxxxxxxxxxx`
-- Copy this ID
-
-**Option 2: From Azure Portal**
-- Go to Azure AI Foundry Studio
-- Navigate to your project → Agents
-- Find your agent and copy its ID
-
-#### 4.2 Update the Retrieval Script
-
-Open [get_agent_mi.py](get_agent_mi.py) and update the agent ID:
-
-```python
-chat_client = AzureAIAgentClient(
-    credential=credential,
-    agent_id="asst_YOUR_AGENT_ID_HERE"  # ← Replace this
-)
-```
-
-#### 4.3 Test Agent Retrieval
-
-Run the script:
-
-```powershell
-python get_agent_mi.py
-```
-
-**Expected Output:**
-```
-✓ MCP tool configured for localhost:8080
-✓ Agent acquired and added MCP tool
-
-============================================================
-Interactive Chat Mode - Type 'exit', 'quit', or 'q' to end
-============================================================
-
-You: 
-```
-
-#### 4.4 Compare: Create vs Retrieve
-
-**When to use `create_agent_mi.py`:**
-- First time setup
-- Creating new agents with different configurations
-- Experimenting with different instructions or tools
-
-**When to use `get_agent_mi.py`:**
-- Reusing existing agents
-- Production deployments
-- Avoiding duplicate agent creation
-- Maintaining consistent agent behavior across sessions
-
----
-
-### Exercise 5: Advanced Customization (20 mins)
+### Exercise 4: Advanced Customization (20 mins)
 
 **Goal:** Extend your MCP server with real-world capabilities.
 
@@ -418,10 +377,10 @@ def get_temperature_advice(temperature: int) -> str:
 
 **After adding:**
 1. Restart your MCP server (Ctrl+C, then `python server.py`)
-2. Restart your agent script
+2. Restart your agent script (`python get_agent_mi.py`)
 3. Try: `"What should I wear if it's 45 degrees?"`
 
-#### 5.2 Challenge: Add Your Own Tool
+#### 4.2 Challenge: Add Your Own Tool
 
 **Ideas for custom tools:**
 - `calculate_percentage(value, total)` - Calculate percentage
@@ -435,7 +394,7 @@ def get_temperature_advice(temperature: int) -> str:
 - Must include a descriptive docstring
 - Should include helpful debug logging
 
-#### 5.3 Test Your Custom Tool
+#### 4.3 Test Your Custom Tool
 
 1. Add your tool to [server.py](server.py)
 2. Restart the MCP server
@@ -463,8 +422,7 @@ By the end of this workshop, you should be able to:
 |------|---------|------------|
 | [server.py](server.py) | MCP server with tools and resources | Main server to run and customize |
 | [test_mcp.py](test_mcp.py) | Local MCP client test | Verify server works before agent integration |
-| [create_agent_mi.py](create_agent_mi.py) | Create new Foundry agent with MCP | First-time agent setup |
-| [get_agent_mi.py](get_agent_mi.py) | Retrieve existing Foundry agent | Reuse agents without recreating |
+| [get_agent_mi.py](get_agent_mi.py) | Connect to portal agent with MCP | Connect your portal-created agent to MCP server |
 | [requirements.txt](requirements.txt) | Python dependencies | Initial setup |
 
 ---

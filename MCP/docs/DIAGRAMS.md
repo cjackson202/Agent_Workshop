@@ -132,14 +132,15 @@ server.py
 ### Agent Components
 
 ```
-create_agent_mi.py / get_agent_mi.py
+get_agent_mi.py (connects to portal-created agent)
 ├─ Authentication
 │  └─ AzureCliCredential (Managed Identity)
 │
-├─ Agent Client
+├─ Agent Connection
 │  ├─ AzureAIAgentClient
 │  ├─ Project Endpoint
-│  └─ Model Deployment
+│  ├─ Model Deployment
+│  └─ Agent ID (from portal)
 │
 ├─ MCP Tool Configuration
 │  ├─ MCPStreamableHTTPTool
@@ -309,24 +310,19 @@ Exercise 2: Local Testing
             ▼
 Exercise 3: Azure Integration
 ┌────────────────────────┐
-│  Configure Azure       │
-│  create_agent_mi.py    │
-│  Chat with agent       │
-└───────────┬────────────┘
-            │
-            ▼
-Exercise 4: Agent Management
-┌────────────────────────┐
-│  Save agent ID         │
+│  Create agent in       │
+│  Azure portal          │
+│  Connect with          │
 │  get_agent_mi.py       │
-│  Compare approaches    │
 └───────────┬────────────┘
             │
             ▼
-Exercise 5: Custom Tools
+Exercise 4: Custom Tools
 ┌────────────────────────┐
 │  Design your tool      │
 │  Implement & test      │
+│  Use with agent        │
+└────────────────────────┘
 │  Use with agent        │
 └────────────────────────┘
 ```
@@ -469,30 +465,31 @@ Issue: Agent not using tool
 
 ## 📊 Comparison Diagrams
 
-### Create vs Retrieve Agent
+### Portal Creation vs Programmatic
 
 ```
-create_agent_mi.py                 get_agent_mi.py
+Portal Creation                     get_agent_mi.py
+(Azure AI Foundry Studio)          (Connection Script)
         │                                 │
         ▼                                 ▼
 ┌───────────────────┐           ┌───────────────────┐
-│ Create NEW agent  │           │ Get EXISTING      │
-│ in Azure          │           │ agent by ID       │
+│ Create agent in   │           │ Connect to        │
+│ Azure portal UI   │           │ existing agent    │
 └────────┬──────────┘           └────────┬──────────┘
          │                               │
          ▼                               ▼
 ┌───────────────────┐           ┌───────────────────┐
-│ Returns new       │           │ Returns existing  │
-│ agent ID          │           │ agent             │
-│ asst_abc123...    │           │ (must know ID)    │
+│ Visible in UI     │           │ Add MCP tools     │
+│ Easy management   │           │ to portal agent   │
+│ Copy agent ID     │           │ (requires ID)     │
 └────────┬──────────┘           └────────┬──────────┘
          │                               │
          ▼                               ▼
 ┌───────────────────┐           ┌───────────────────┐
 │ Use for:          │           │ Use for:          │
-│ - First setup     │           │ - Reusing agents  │
-│ - New configs     │           │ - Production      │
-│ - Experimentation │           │ - Consistency     │
+│ - Agent creation  │           │ - Tool integration│
+│ - Configuration   │           │ - Testing MCP     │
+│ - Monitoring      │           │ - Production use  │
 └───────────────────┘           └───────────────────┘
 
 ```

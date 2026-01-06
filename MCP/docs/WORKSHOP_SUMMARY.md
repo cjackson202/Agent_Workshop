@@ -17,16 +17,12 @@ Your MCP directory has been transformed into a comprehensive, interactive worksh
    - ✅ Validates tool invocation
    - ✅ Shows structured output
 
-3. **[create_agent_mi.py](create_agent_mi.py)** - Create Azure AI agent
+3. **[get_agent_mi.py](get_agent_mi.py)** - Connect to portal-created agent
    - ✨ **Enhanced:** Comprehensive comments explaining each step
-   - ✨ **Enhanced:** Clear configuration section
+   - ✨ **Enhanced:** Clear configuration section for Azure endpoint and agent ID
    - ✨ **Enhanced:** Interactive chat loop with better UX
    - ✨ **Enhanced:** Proper cleanup and error handling
-
-4. **[get_agent_mi.py](get_agent_mi.py)** - Retrieve existing agent
-   - ✨ **Enhanced:** Detailed documentation
-   - ✨ **Enhanced:** Explains create vs retrieve pattern
-   - ✨ **Enhanced:** Better user feedback
+   - 🎯 Connects to agent created in Azure AI Foundry portal
 
 5. **[requirements.txt](requirements.txt)** - Python dependencies
    - ✅ uvicorn, mcp[cli], agent-framework
@@ -259,7 +255,7 @@ python test_mcp.py
 # Show: Tools discovered, tests pass
 
 # Terminal 2: Chat with Agent
-python create_agent_mi.py
+python get_agent_mi.py
 # Ask: "What is 50 + 25?"
 # Show: Agent uses add tool, returns result
 # Ask: "Calculate 100 minus 30"

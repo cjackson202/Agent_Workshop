@@ -75,7 +75,8 @@ source .venv/bin/activate
 python test_mcp.py
 
 # Terminal 2 (after test succeeds)
-python create_agent_mi.py
+# First: Create agent in Azure portal, copy agent ID
+python get_agent_mi.py
 # Try: "What is 25 + 17?"
 # Try: "Calculate 100 minus 45"
 # Show: Switch to Terminal 1 to see server logs

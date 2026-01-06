@@ -67,14 +67,16 @@ def subtract(a: int, b: int) -> int:
     return a - b
 
 # ============================================================================
-# WORKSHOP TODO: Add your own tools here!
-# Example:
-#
-# @mcp.tool()
-# def multiply(a: int, b: int) -> int:
-#     """Multiply two numbers"""
-#     return a * b
-#
+@mcp.tool()
+def multiply(a: int, b: int) -> int:
+    """Multiply two numbers"""
+    print('-'*50)
+    print(f"Multiply tool being used for product of:")
+    print(a)
+    print('×')
+    print(b)
+    print('-'*50)
+    return a * b
 # ============================================================================
 
 # ============================================================================
@@ -116,6 +118,7 @@ if __name__ == "__main__":
     print("\nAvailable Tools:")
     print("  - add(a, b): Add two numbers")
     print("  - subtract(a, b): Subtract two numbers")
+    print("  - multiply(a, b): Multiply two numbers")
     print("\nAvailable Resources:")
     print("  - greeting://{name}: Get personalized greeting")
     print("="*60)

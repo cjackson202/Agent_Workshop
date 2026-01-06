@@ -34,8 +34,7 @@
 |------|---------|------|
 | [server.py](server.py) | MCP server with tools | Start first (Terminal 1) |
 | [test_mcp.py](test_mcp.py) | Test MCP locally | After server starts (Terminal 2) |
-| [create_agent_mi.py](create_agent_mi.py) | Create new Azure agent | First time setup |
-| [get_agent_mi.py](get_agent_mi.py) | Use existing agent | After creating agent |
+| [get_agent_mi.py](get_agent_mi.py) | Connect to portal agent | After creating agent in portal |
 | [requirements.txt](requirements.txt) | Install dependencies | Run once: `pip install -r requirements.txt --pre` |
 
 ### Documentation Files (Read these)
@@ -84,14 +83,15 @@ Step 3: Test Locally (20 min)
 
 Step 4: Azure Integration (25 min)
 └─→ README.md Exercise 3
-    └─→ Configure Azure in create_agent_mi.py
-        └─→ python create_agent_mi.py
-            └─→ Chat with agent!
+    └─→ Create agent in Azure portal
+        └─→ Configure get_agent_mi.py
+            └─→ python get_agent_mi.py
+                └─→ Chat with agent!
 
 Step 5: Advanced (20 min)
-└─→ README.md Exercises 4 & 5
-    └─→ Retrieve agents
-        └─→ Build custom tools
+└─→ README.md Exercise 4
+    └─→ Build custom tools
+        └─→ Test with agent
 ```
 
 ---
@@ -135,10 +135,7 @@ python server.py
 # Test
 python test_mcp.py
 
-# Create Agent
-python create_agent_mi.py
-
-# Use Existing Agent
+# Connect to Portal Agent
 python get_agent_mi.py
 
 # Azure Login (Managed Identity for Azure ML)
@@ -151,10 +148,11 @@ az account show
 - Change in server.py if needed
 
 ### Azure Configuration
-Update in `create_agent_mi.py` and `get_agent_mi.py`:
+Update in `get_agent_mi.py`:
 ```python
 os.environ["AZURE_AI_PROJECT_ENDPOINT"] = "https://YOUR-PROJECT.services.ai.azure.com/..."
 os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"] = "gpt-4o-mini"
+AGENT_ID = "asst_YOUR_AGENT_ID"  # Copy from Azure portal
 ```
 
 ---

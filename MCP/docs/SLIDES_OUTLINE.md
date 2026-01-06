@@ -141,8 +141,7 @@ Your Machine                    Azure Cloud
 |------|---------|-------------|
 | `server.py` | MCP server | Run continuously |
 | `test_mcp.py` | Local test client | Before agent integration |
-| `create_agent_mi.py` | Create new agent | First setup |
-| `get_agent_mi.py` | Retrieve existing agent | Reuse agents |
+| `get_agent_mi.py` | Connect to portal agent | After creating agent in portal |
 | `requirements.txt` | Dependencies | Install once |
 
 ---
@@ -198,15 +197,15 @@ python test_mcp.py
 ## Slide 14: Live Demo - Azure Agent
 
 **What we'll see:**
-1. Agent creation
-2. MCP tool configuration
-3. Interactive chat
-4. Tool invocations in action
+1. Creating agent in Azure portal
+2. Copying agent ID
+3. Configuring connection script
+4. Interactive chat with MCP tools
 
-**Command:**
-```powershell
-python create_agent_mi.py
-```
+**Steps:**
+1. Create agent in portal
+2. Update `get_agent_mi.py`
+3. Run: `python get_agent_mi.py`
 
 **Try:** "What is 25 + 17?"
 
@@ -269,19 +268,21 @@ def add(a: int, b: int) -> int:
 
 ---
 
-## Slide 18: Create vs Retrieve Agents
+## Slide 18: Portal-First Workflow
 
-**Create Agent** (`create_agent_mi.py`)
-- Creates NEW agent each time
-- Use for: First setup, new configurations
-- Result: New agent ID
+**Why Create Agent in Portal?**
+- ✅ Visible in Azure UI
+- ✅ Easier management and monitoring
+- ✅ Production-ready pattern
+- ✅ No confusion about agent location
 
-**Retrieve Agent** (`get_agent_mi.py`)
-- Reuses EXISTING agent
-- Use for: Production, consistency
-- Requires: Existing agent ID
+**Workflow:**
+1. Create agent in Azure AI Foundry portal
+2. Copy agent ID
+3. Use `get_agent_mi.py` to connect and add MCP tools
+4. Chat with your agent
 
-**Best Practice:** Create once, retrieve many times
+**Best Practice:** Portal for creation, code for tool integration
 
 ---
 

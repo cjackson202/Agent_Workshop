@@ -24,11 +24,7 @@ python server.py
 source .venv/bin/activate
 python test_mcp.py
 
-# Create New Agent (Terminal 2)
-source .venv/bin/activate
-python create_agent_mi.py
-
-# Use Existing Agent (Terminal 2)
+# Connect to Portal Agent (Terminal 2)
 source .venv/bin/activate
 python get_agent_mi.py
 ```
@@ -70,7 +66,7 @@ def your_tool_name(param1: type, param2: type) -> return_type:
 
 ## 🔧 Azure Configuration
 
-Update in `create_agent_mi.py` and `get_agent_mi.py`:
+Update in `get_agent_mi.py`:
 
 ```python
 # Your Azure AI Foundry project endpoint
@@ -79,11 +75,18 @@ os.environ["AZURE_AI_PROJECT_ENDPOINT"] = "https://YOUR-PROJECT.services.ai.azur
 # Your model deployment name
 os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"] = "gpt-4o-mini"
 
-# For get_agent_mi.py only: Your agent ID
+# Your agent ID (from Azure portal)
 AGENT_ID = "asst_xxxxxxxxxxxxx"
 ```
 
-Find these in: **Azure AI Foundry Studio → Project Settings**
+**Create Agent in Portal:**
+1. Go to [ai.azure.com](https://ai.azure.com)
+2. Navigate to your project → Agents
+3. Click "Create Agent"
+4. Copy the Agent ID
+5. Paste into `get_agent_mi.py`
+
+Find project endpoint in: **Azure AI Foundry Studio → Project Settings**
 
 ---
 
@@ -105,13 +108,14 @@ Find these in: **Azure AI Foundry Studio → Project Settings**
 
 ```
 ┌──────────┐     ┌──────────┐     ┌──────────┐
-│  Start   │────►│  Test    │────►│  Create  │
+│  Start   │────►│  Test    │────►│  Connect │
 │  Server  │     │  Locally │     │  Agent   │
 └──────────┘     └──────────┘     └──────────┘
      │                │                 │
      │                │                 │
  Terminal 1       Terminal 2        Terminal 2
- server.py        test_mcp.py    create_agent_mi.py
+ server.py        test_mcp.py    get_agent_mi.py
+                                (+ create in portal)
 ```
 
 ---
@@ -120,8 +124,8 @@ Find these in: **Azure AI Foundry Studio → Project Settings**
 
 - [ ] **server.py** - MCP server (modify this!)
 - [ ] **test_mcp.py** - Test client (run to verify)
-- [ ] **create_agent_mi.py** - Create agent (configure Azure)
-- [ ] **get_agent_mi.py** - Retrieve agent (use later)
+- [ ] **Azure Portal** - Create agent here first
+- [ ] **get_agent_mi.py** - Connect agent (configure Azure & agent ID)
 - [ ] **requirements.txt** - Dependencies (install once)
 
 ---
@@ -130,9 +134,8 @@ Find these in: **Azure AI Foundry Studio → Project Settings**
 
 **Exercise 1 (15 min):** Add multiplication tool  
 **Exercise 2 (20 min):** Test server locally  
-**Exercise 3 (25 min):** Create Azure agent  
-**Exercise 4 (20 min):** Retrieve existing agent  
-**Exercise 5 (20 min):** Build custom tool  
+**Exercise 3 (25 min):** Create agent in portal & connect to MCP  
+**Exercise 4 (20 min):** Build custom tools  
 
 ---
 
