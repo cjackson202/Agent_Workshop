@@ -123,8 +123,9 @@ This grounds your agent in domain-specific knowledge without requiring external 
 #### Step 2.1: Upload File Using File Search Tool
 1. In Azure AI Foundry portal, open your Contoso Sales Agent project
 2. Navigate to your agent in the Playground
-3. In the agent configuration panel, find the **"Tools"** section
-4. Add the **"File Search"** tool
+3. In the agent configuration panel, find the **"Tools"** section (right side bar)
+4. In the **"Knowledge"** section, choose ***"Add+"***
+4. Add the **"Files"** tool
 5. Click **"Upload files"** within the File Search tool settings
 6. Select `data/contoso-tents-datasheet (1).pdf` from your local directory
 7. Wait for processing to complete:
@@ -155,9 +156,9 @@ This grounds your agent in domain-specific knowledge without requiring external 
 
 #### Step 2.4: Test File Search Integration
 Test with queries like:
-- "What brands of hiking shoes do we sell?"
-- "What brands of tents do we sell?"
-- "Show tents by price range"
+- "What brands of tents does Contoso sell?"
+- "What is the best tent for rainy weather conditions?"
+- "What type of fabrics are each tent created with?"
 
 ### Exercise 3: Add Bing Grounding Tool (25 mins)
 **Goal:** Add competitive intelligence capabilities using Bing Search
@@ -174,8 +175,9 @@ Test with queries like:
 #### Step 3.2: Connect Bing Grounding to Agent
 1. Return to Azure AI Foundry portal
 2. Open your Contoso Sales Agent
-3. Navigate to "Tools" section
-4. Add "Grounding with Bing Search" tool
+3. In the agent configuration panel, find the **"Tools"** section (right side bar)
+4. In the **"Knowledge"** section, choose ***"Add+"***
+4. Add **"Grounding with Bing Search"** tool
 5. Configure connection:
    - Select your Bing Grounding resource
    - Authorize connection
@@ -190,16 +192,15 @@ Test with queries like:
    - **Tool Selection Strategy**: When to use each tool
    - New competitive analysis capabilities
    - Query examples that trigger each tool
-   - Best practices for Bing results (max 3, concise, relevant)
 4. Save the updated instructions
 
 **Key Enhancement:** Notice how these instructions build on Exercise 2 by adding external intelligence while keeping internal product knowledge via File Search.
 
 #### Step 3.4: Test Complete Agent
 Test with advanced queries like:
-- "What beginner tents do our competitors sell? Include prices."
-- "Show the tents we sell by region that are similar price to competitor beginner tents"
-- "What product types and categories are these brands associated with?"
+1. "What are the themes of Contoso tents?"
+2. "How do these themes compare to competitor tents?"
+3. "What is one competitor tent that is most similar to Contoso's TrailMaster X4 tent?"
 
 ### Exercise 4: Explore and Experiment (10 mins)
 **Goal:** Test the fully enhanced agent

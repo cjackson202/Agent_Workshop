@@ -102,6 +102,7 @@ Since we're using Azure ML Notebooks, authenticate using managed identity:
 ```bash
 az login --identity
 ```
+***Note***: User object will need the `Azure AI User` role assigned.
 
 **Update Azure Settings:**
 
@@ -157,7 +158,15 @@ Open [server.py](server.py) and examine the code:
 ```python
 @mcp.tool()
 def multiply(a: int, b: int) -> int:
-    """Multiply two numbers"""
+    """Multiply two numbers
+    
+    Args:
+        a: Multiplicand number being multiplied
+        b: Multiplier number which the multiplicand is multiplied
+        
+    Returns:
+        The product (a * b)
+    """
     print('-'*50)
     print(f"Multiply tool being used for product of:")
     print(a)
@@ -276,7 +285,7 @@ Review [get_agent_mi.py](get_agent_mi.py):
 **Key Components:**
 1. **Authentication:** Uses Azure CLI credentials (Managed Identity)
 2. **Agent Connection:** Connects to your portal agent by ID
-3. **MCP Tool Configuration:** Adds your local MCP server to the agent
+3. **MCP Tool Configuration:** Adds your local ***HTTP*** MCP server to the agent
    ```python
    mcp_tool = MCPStreamableHTTPTool(
        name="Custom MCP Server",

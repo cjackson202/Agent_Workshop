@@ -67,16 +67,7 @@ def subtract(a: int, b: int) -> int:
     return a - b
 
 # ============================================================================
-@mcp.tool()
-def multiply(a: int, b: int) -> int:
-    """Multiply two numbers"""
-    print('-'*50)
-    print(f"Multiply tool being used for product of:")
-    print(a)
-    print('×')
-    print(b)
-    print('-'*50)
-    return a * b
+# Additional Tool "Multiplication" can be added here. 
 # ============================================================================
 
 # ============================================================================
