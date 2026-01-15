@@ -279,7 +279,7 @@ You: What tents do you offer?
 You: Which one is best for winter?
 🤖 Assistant: [Recommends based on previous context...]
 
-You: How much does it cost?
+You: How does it compare to competitor's winter tents?
 🤖 Assistant: [Knows you're asking about the winter tent...]
 ```
 
@@ -334,19 +334,6 @@ async with (
 - [ ] Enabled OpenTelemetry tracing (`configure_azure_monitor`)
 - [ ] Viewed traces in Azure AI Foundry portal
 - [ ] Enabled conversation threading (`get_new_thread()` and `thread=thread`)
-
----
-
-## Bonus Challenges
-
-### Challenge 1: Multiple Queries
-Modify the script to ask multiple questions in sequence and observe the traces.
-
-### Challenge 2: Error Handling
-Add try/except blocks to gracefully handle potential errors.
-
-### Challenge 3: Custom Tracing Attributes
-Explore adding custom attributes to your traces for better observability.
 
 ---
 

@@ -26,7 +26,7 @@ import os
 # Find this in Azure AI Foundry Studio → Project Settings → Project Endpoint
 # Example format: "https://<account-name>.services.ai.azure.com/api/projects/<project-name>"
 
-PROJECT_ENDPOINT = "YOUR_PROJECT_ENDPOINT_HERE"  # <-- REPLACE THIS
+PROJECT_ENDPOINT = "https://camerjackson-9533-resource.services.ai.azure.com/api/projects/camerjackson-9533"  # <-- REPLACE THIS
 os.environ["AZURE_AI_PROJECT_ENDPOINT"] = PROJECT_ENDPOINT
 
 # Set your model deployment name (usually "gpt-4o" if using default deployment)
@@ -40,7 +40,7 @@ os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"] = "gpt-4o"
 # Find this in Azure AI Foundry Studio → Agents → Select your agent → Copy Agent ID
 # Example format: "asst_xxxxxxxxxxxxxxxxxxxx"
 
-AGENT_ID = "YOUR_AGENT_ID_HERE"  # <-- REPLACE THIS
+AGENT_ID = "asst_RAaC0bqdGcOGJT34ysxP2tvq"  # <-- REPLACE THIS
 
 
 async def main():
@@ -72,7 +72,7 @@ async def main():
         # This sends traces to your Foundry project's Application Insights
         # allowing you to monitor agent performance, latency, and usage
         
-        # await client.configure_azure_monitor(enable_live_metrics=True)
+        await client.configure_azure_monitor(enable_live_metrics=True)
         
         print("✓ Connected to agent:", AGENT_ID)
         
@@ -92,7 +92,7 @@ async def main():
         # TODO: Uncomment the line below to create a thread for conversation history
         # This allows the agent to remember previous messages in the conversation
         
-        # thread = agent.get_new_thread()
+        thread = agent.get_new_thread()
         
         while True:
             try:
@@ -113,7 +113,7 @@ async def main():
                 
                 # TODO: After completing Exercise 4, change this line to:
                 # result = await agent.run(user_input, thread=thread)
-                result = await agent.run(user_input)
+                result = await agent.run(user_input, thread=thread)
                 
                 print(result.text)
                 print()  # Extra newline for readability

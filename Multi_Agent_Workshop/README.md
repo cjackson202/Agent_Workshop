@@ -1,331 +1,166 @@
 # Multi-Agent Orchestration Workshop
 
-> **Learn to build collaborative AI systems using Microsoft Agent Framework**
-
-This hands-on workshop teaches you how to build multi-agent systems using three key orchestration patterns: Sequential, Handoff, and Group Chat.
+Build collaborative AI systems using three orchestration patterns: **Sequential**, **Handoff**, and **Group Chat**.
 
 ---
 
-## 🧩 Core Concepts (Building Blocks)
-
-Before diving in, understand these simple concepts:
-
-### 1. Executors - Your Workers
-Think of executors as team members, each with a specific job:
-- **AI Agents**: Smart workers who think and make decisions (like a consultant)
-- **Custom Executors**: Simple workers who follow rules (like a calculator)
-
-**Example**: A Writer agent creates content, while a calculator executor does math.
-
-### 2. Workflows - Your Plan
-A workflow is like a project plan that connects workers:
-- Defines who does what and in what order
-- Manages how information flows between workers
-- Like an assembly line or org chart
-
-**Example**: Writer creates → Reviewer checks → Editor polishes
-
-### 3. Events - Your Status Updates
-Events tell you what's happening in real-time:
-- Like package tracking: "Started", "In Progress", "Delivered"
-- Helps you see what each worker is doing
-- Useful for debugging and monitoring
-
-**Example**: "Writer is working...", "Reviewer completed", "All done!"
-
----
-
-## 🎯 Learning Objectives
+## 🎯 Objectives
 
 By the end of this workshop, you will:
-- ✅ Understand three multi-agent orchestration patterns
-- ✅ Build sequential pipelines (Write → Review → Edit)
-- ✅ Implement dynamic agent handoffs (triage and routing)
-- ✅ Create collaborative group chat workflows
-- ✅ Add tool calling to extend agent capabilities
-- ✅ Choose the right pattern for your use case
-
----
-
-## 📋 Prerequisites
-
-- **Python 3.10+** installed
-- **Azure OpenAI** access with GPT-4 or GPT-4o deployment
-- **Azure CLI** installed (`az` command)
-- **Git** (to clone repository)
-- Basic understanding of async/await in Python
-- Familiarity with AI agents (Day 1 & 2 of workshop series)
+- Build sequential pipelines where agents process tasks in order
+- Implement dynamic agent handoffs for intelligent routing
+- Create collaborative group chat workflows
+- Add tool calling to extend agent capabilities
 
 ---
 
 ## 🚀 Quick Start
 
 ```bash
-# Setup
 cd Multi_Agent_Workshop
-python -m venv .venv
-.venv\Scripts\activate  # Windows
 pip install -r requirements.txt
+az login --identity
+```
 
-# Configure Azure
+Set environment variables:
+```bash
 $env:AZURE_OPENAI_ENDPOINT="https://your-resource.openai.azure.com/"
 $env:AZURE_OPENAI_CHAT_DEPLOYMENT_NAME="gpt-4o"
-
-# Authenticate
-az login --identity
-
-# Run first demo
-cd Sequential
-python agent_sequential.py
 ```
 
-📖 **Full setup:** See [docs/QUICKSTART.md](docs/QUICKSTART.md)
+📖 **Full setup:** [docs/QUICKSTART.md](docs/QUICKSTART.md)
 
 ---
 
-## 🔄 Orchestration Patterns
+## 📚 Exercises
 
-### 1. Sequential Orchestration
-**Location:** `Sequential/agent_sequential.py`
+### Exercise 1: Sequential Pipeline
+**File:** `Sequential/agent_sequential.py`
 
-Pipeline workflows where agents process tasks in order. Output from one agent becomes input for the next.
+**Scenario:** You're building an automated content creation system for a marketing team. A user submits a topic, and three specialized agents collaborate in sequence:
+- **Writer Agent** drafts the initial content (has word counter, readability checker, character limiter tools)
+- **Reviewer Agent** analyzes the draft using the same tools and provides feedback
+- **Editor Agent** polishes the final copy based on feedback
 
-**Example:** Writer → Reviewer → Editor
+```
+User Request → Writer Agent → Reviewer Agent → Editor Agent → Final Output
+```
 
-**Use Cases:**
-- Editorial workflows
-- Data processing pipelines
-- Quality assurance flows
-- Multi-stage content creation
-
-**Features:**
-- ✅ Tool calling (calculator, word counter)
-- ✅ Custom executors for analytics
-- ✅ Multiple pipeline configurations
-
-**Run:**
+**Step 1: Run the default pipeline (Advanced)**
 ```bash
 cd Sequential
 python agent_sequential.py
 ```
 
-**Exercise: Add Sentiment Analyzer Tool**
+**Step 2: Observe the output**
+- Watch how the Writer creates content first
+- The Reviewer receives the Writer's output and analyzes it using tools
+- The Editor polishes the final result
+- The ContentAnalyzer (custom executor) provides pipeline statistics
+- Notice how each agent builds on the previous agent's work
 
-The sentiment analyzer tool is already written but commented out. Here's how to enable it:
+**Step 3: Try different pipeline configurations**
+Open `agent_sequential.py` and find `main()` (~line 457). Uncomment different demos:
 
-**Step 1: Uncomment the tool function**
-- Open `Sequential/agent_sequential.py`
-- Go to lines 141-157
-- Remove the triple quotes `"""` before and after the `sentiment_analyzer` function
+| Demo | Pipeline | What it shows |
+|------|----------|---------------|
+| `demo_advanced()` | Writer → Reviewer → Editor → Analyzer | Default. Includes custom executor |
+| `demo_basic()` | Writer → Reviewer | Simplest 2-agent pipeline |
+| `demo_extended()` | Writer → Reviewer → Editor | 3 AI agents, no custom executor |
+| `demo_with_tools()` | Writer → Reviewer → Editor | Explicit tool usage for Twitter |
 
-**Step 2: Add it to the Reviewer agent**
-- Find the Reviewer agent definition (around line 212)
-- Change: `tools=[word_counter, readability_checker]`
-- To: `tools=[word_counter, readability_checker, sentiment_analyzer]`
-
-**Step 3: Update instructions**
-- In the Reviewer agent's instructions (lines 197-211), add:
-  ```python
-  3. THIRD: Call sentiment_analyzer to check emotional tone
-  ```
-
-**Step 4: Test it**
-```bash
-python agent_sequential.py
-```
-
-The Reviewer will now analyze sentiment for marketing content!
+**Step 4: Add the Sentiment Analyzer tool**
+1. Find the `sentiment_analyzer` function (~line 141) and uncomment it
+2. Find the Reviewer agent (~line 212) and add the tool:
+   ```python
+   tools=[word_counter, readability_checker, sentiment_analyzer]
+   ```
+3. Run again — the Reviewer now analyzes sentiment!
 
 ---
 
-### 2. Handoff Orchestration
-**Location:** `Handoff/agent_handoff.py`
+### Exercise 2: Handoff Routing  
+**File:** `Handoff/agent_handoff.py`
 
-Dynamic routing where agents transfer control based on request type. Like a customer support system with specialized departments.
+**Scenario:** You're building an AI customer support system for an e-commerce company. Instead of one generic chatbot, you have specialist agents:
+- **Triage Agent** analyzes the customer's issue and routes to the right department
+- **Refund Agent** handles returns and refunds using `submit_refund()` (requires human approval)
+- **Order Agent** tracks shipments using `track_order()` and can cancel with `cancel_order()`
+- **Account Agent** helps with login and profile issues
+- **Technical Agent** troubleshoots app/website problems
 
-**Example:** Triage → Refund/Order/Account/Technical Agent
+```
+User Request → Triage Agent → Routes to: Refund | Order | Account | Technical
+```
 
-**Use Cases:**
-- Customer support systems
-- Expert routing
-- Approval workflows
-- Multi-department operations
-
-**Features:**
-- ✅ Dynamic agent selection
-- ✅ Human-in-the-loop approval
-- ✅ Context preservation across handoffs
-- ✅ Interactive user input
-
-**Run:**
+**Step 1: Run the default scenario (Refund Request)**
 ```bash
 cd Handoff
 python agent_handoff.py
 ```
 
-**Try:** "My order 12345 arrived damaged. I need a refund."
+**Step 2: Test the refund flow**
+- Enter: *"My order 12345 arrived damaged. I need a refund."*
+- Watch the Triage agent analyze and route to the Refund agent
+- When prompted for approval, type `yes` or `no`
+
+**Step 3: Try different demo scenarios**
+Open `agent_handoff.py` and find `main()` (~line 445). Uncomment different demos:
+
+| Demo | What it tests |
+|------|---------------|
+| `demo_refund_scenario()` | Default. Triage → Refund agent with approval workflow |
+| `demo_tracking_scenario()` | Triage → Order agent, simple tool usage (no approval) |
+| `demo_complex_scenario()` | Multi-specialist handoffs using advanced workflow |
+
+**Step 4: Try other routing scenarios interactively**
+- *"Where is my order?"* → routes to Order agent
+- *"I can't log into my account"* → routes to Account agent
+- *"The app keeps crashing"* → routes to Technical agent
+- Type `quit` or `exit` to end the session
 
 ---
 
-### 3. Group Chat Orchestration
-**Location:** `Group_Chat/agent_groupchat.py`
+### Exercise 3: Group Chat Collaboration
+**File:** `Group_Chat/agent_groupchat.py`
 
-Collaborative workflows where multiple agents work together with intelligent speaker selection.
+**Scenario:** You're building an automated research assistant that produces verified, professional documents. Three agents work as a team:
+- **Researcher Agent** gathers facts using `web_search()` and `get_technical_docs()` tools
+- **Writer Agent** synthesizes findings into markdown and saves with `save_to_document()`
+- **FactChecker Agent** reads the saved file with `read_saved_document()` and validates accuracy
 
-**Example:** Researcher + Writer + FactChecker
+The workflow loops until the FactChecker approves, ensuring quality output.
 
-**Use Cases:**
-- Research and synthesis
-- Peer review workflows
-- Collaborative problem-solving
-- Multi-perspective analysis
+```
+Research Question → Researcher → Writer → FactChecker → Markdown Document
+```
 
-**Features:**
-- ✅ Web search and documentation tools
-- ✅ Document generation
-- ✅ Multiple workflow strategies (sequential, iterative, agent-managed)
-- ✅ Quality validation and refinement
-
-**Run:**
+**Step 1: Run the default workflow (Agent-Based Manager)**
 ```bash
 cd Group_Chat
 python agent_groupchat.py
 ```
 
-**Output:** Check `output/` folder for generated markdown files
+**Step 2: Observe the collaboration**
+- The Coordinator agent decides who speaks next using LLM reasoning
+- Researcher gathers information using web search tools
+- Writer creates a structured document
+- FactChecker validates accuracy
+- Check `output/` folder for the generated markdown file
 
----
+**Step 3: Try different workflow strategies**
+Open `agent_groupchat.py` and find `main()` (~line 575). Toggle between workflows:
 
-### Group Chat Exercises
+| Workflow | How it works | Best for |
+|----------|--------------|----------|
+| `workflow_agent_manager` | Coordinator LLM picks next speaker | Complex questions needing adaptive routing |
+| `workflow_iterative` | Rule-based routing with revision loops | Quality-critical work requiring validation |
 
-**Understanding the Two Group Chat Workflow Strategies**
+To switch: comment out one `await run_group_chat(...)` line and uncomment the other.
 
-Group Chat supports multiple orchestration approaches. We'll focus on two advanced patterns (Sequential orchestration is covered in the Sequential module):
-
-| Workflow | Speaker Selection | Iteration | Best For |
-|----------|------------------|-----------|----------|
-| **Agent-Based Manager** | Coordinator agent decides | Limited by termination condition | Complex questions needing adaptive routing |
-| **Iterative Refinement** | Smart function with feedback analysis | Yes - loops until approved | Quality-critical work requiring validation |
-
-**Key Differences Explained:**
-
-**1. Agent-Based Manager (`workflow_agent_manager`)**
-- Uses Coordinator agent to intelligently select next speaker
-- LLM decides who speaks based on conversation context
-- Can adapt to conversation needs
-- More flexible but uses extra LLM calls for coordination
-- Think: Project manager delegating tasks dynamically
-
-**2. Iterative Refinement (`workflow_iterative`)**
-- Uses `iterative_selector()` function that analyzes FactChecker feedback
-- Routes back to Writer or Researcher based on specific issues found
-- Continues until FactChecker approves or max rounds reached
-- Ensures quality through revision loops
-- Think: Editorial process with multiple draft revisions
-
----
-
-### Group Chat Exercises
-
-**Understanding the Two Group Chat Workflow Strategies**
-
-Group Chat supports multiple orchestration approaches. We'll focus on two advanced patterns (Sequential orchestration is covered in the Sequential module):
-
-| Workflow | Speaker Selection | Iteration | Best For |
-|----------|------------------|-----------|----------|
-| **Agent-Based Manager** | Coordinator agent decides | Limited by termination condition | Complex questions needing adaptive routing |
-| **Iterative Refinement** | Smart function with feedback analysis | Yes - loops until approved | Quality-critical work requiring validation |
-
-**Key Differences Explained:**
-
-**1. Agent-Based Manager (`workflow_agent_manager`)**
-- Uses Coordinator agent to intelligently select next speaker
-- LLM decides who speaks based on conversation context
-- Can adapt to conversation needs
-- More flexible but uses extra LLM calls for coordination
-- Think: Project manager delegating tasks dynamically
-
-**2. Iterative Refinement (`workflow_iterative`)**
-- Uses `iterative_selector()` function that analyzes FactChecker feedback
-- Routes back to Writer or Researcher based on specific issues found
-- Continues until FactChecker approves or max rounds reached
-- Ensures quality through revision loops
-- Think: Editorial process with multiple draft revisions
-
----
-
-**Exercise 1: Run Agent-Based Manager Workflow (10 min)**
-
-Try the intelligent coordinator approach.
-
-**Steps:**
-1. Open [agent_groupchat.py](Group_Chat/agent_groupchat.py)
-2. In `main()` function (around line 590), uncomment:
-   ```python
-   # 1. Agent-based manager (intelligent coordination) - uncomment to try
-   await run_group_chat(workflow_agent_manager, tasks[0], "Agent-Based Manager Workflow")
-   ```
-3. Comment out the iterative workflow line
-4. Run: `python agent_groupchat.py`
-
-**Observe:**
-- Coordinator agent decides which specialist to call next
-- More adaptive than simple sequential patterns
-- Context-aware speaker selection
-- **Key Insight**: Watch the Coordinator's reasoning in brackets. It's using an LLM to make intelligent routing decisions instead of following hardcoded rules.
-
----
-
-**Exercise 2: Run Iterative Refinement Workflow (10 min)**
-
-Try the feedback-based revision approach with default agent behavior.
-
-**Steps:**
-1. In `main()` function (around line 590), ensure this line is uncommented:
-   ```python
-   # 2. Iterative refinement (allows multiple rounds if FactChecker finds issues)
-   await run_group_chat(workflow_iterative, tasks[0], "Iterative Refinement Workflow")
-   ```
-2. Comment out the agent-based manager workflow line
-3. Run: `python agent_groupchat.py`
-
-**Observe:**
-- Linear flow: Researcher → Writer → FactChecker
-- FactChecker reads the saved document using `read_saved_document()` tool
-- Workflow analyzes FactChecker's verdict
-- If approved, workflow ends; if issues found, routes back to Writer or Researcher
-- **Key Insight**: The `iterative_selector()` function uses deterministic keyword parsing (not LLM) to route based on FactChecker feedback
-
-**Compare with Exercise 1:**
-- Agent-based Manager: LLM-based coordination, adaptive but more token usage
-- Iterative Refinement: Rule-based routing on keywords, predictable and efficient for quality loops
-
----
-
-**Exercise 3: Testing the Fact Checker with Deliberate Errors (Advanced, 20 min)**
-
-Now that you've seen both workflows, test the iterative refinement's error-correction capabilities by deliberately introducing errors.
-
-**Learning Objectives:**
-- Validate that quality control agents actually work (not just rubber stamps)
-- See multi-round revision loops in action
-- Learn how to write effective agent instructions with emphasis
-- Understand instruction design principles for agent behavior modification
-
-**Prerequisites:** Complete Exercises 1 and 2 first to understand both orchestration approaches.
-
-**Step 1: Verify iterative workflow is enabled**
-
-Ensure the `main()` function (around line 590) has the iterative workflow uncommented:
-
-```python
-# 2. Iterative refinement (allows multiple rounds if FactChecker finds issues)
-await run_group_chat(workflow_iterative, tasks[0], "Iterative Refinement Workflow")
-```
-
-**Step 2: Add the testing instruction to Writer agent**
-
-Find the Writer agent definition (around line 325) and replace the instructions with this enhanced version that deliberately produces wrong answers first:
+**Step 4 (Advanced): Test the revision loop**
+1. Switch to `workflow_iterative` (comment/uncomment in `main()`)
+2. Find Writer agent (~line 325) and replace the `instructions` with:
 
 ```python
 instructions="""You are a technical writer. Your job is to create clear, well-structured answers and save them to professional documents.
@@ -341,164 +176,36 @@ You will be asked to revise after the FactChecker reviews. This is intentional a
 
 Guidelines:
 1. Review the research provided by the Researcher
-2. Organize information into a logical structure with clear sections:
-   - Introduction/Overview
-   - Key Points (with subheadings)
-   - Examples or Use Cases (if applicable)
-   - Sources/References
-   - Conclusion or Summary
+2. Organize information into a logical structure with clear sections
 3. Write in a clear, professional tone using markdown formatting
-4. Use proper markdown: ## for headings, **bold** for emphasis, - for bullets, ``` for code
-5. IMPORTANT: Show your complete answer in your response FIRST, so the FactChecker can review it
-6. After showing your answer, call save_to_document() with:
-   - title: The question being answered
-   - content: Your complete, well-formatted answer (the same content you just showed)
-   - author: "AI Research Team"
-7. Report the result of the save operation
+4. IMPORTANT: Show your complete answer in your response FIRST
+5. After showing your answer, call save_to_document() with title, content, and author
+6. Report the result of the save operation
 
-**CRITICAL SOURCE ATTRIBUTION RULES:**
-- ONLY cite sources that the Researcher explicitly provided
-- DO NOT add, invent, or hallucinate additional sources
-- Copy the exact source citations from the Researcher's findings
-- If the Researcher provided limited sources, that's fine - use only those
-- Never add links or references that weren't in the Researcher's output
-
-Format your response like this:
----
-[Your complete formatted answer here with all sections]
----
-I've saved this answer using save_to_document().
-
-Make your response comprehensive and well-formatted, but use ONLY the research and sources provided by the Researcher.
-
-⚠️ REMINDER: On FIRST DRAFT, write INCORRECT/OPPOSITE information to test the FactChecker!""",
+⚠️ REMINDER: On FIRST DRAFT, write INCORRECT/OPPOSITE information to test the FactChecker!"""
 ```
 
-**Step 3: Run and observe**
-
-```bash
-python agent_groupchat.py
-```
-
-Watch carefully:
-1. **Researcher** gathers accurate information about async/await benefits
-2. **Writer** intentionally writes WRONG information (e.g., "decreases performance")
-3. **FactChecker** calls `read_saved_document()` and identifies specific errors
-4. **Writer** gets a second chance and produces the correct version
-5. **FactChecker** approves the corrected content
-
-**Step 4: Key observations**
-
-Notice how the instruction works:
-- ⚠️ emoji and "CRITICAL INSTRUCTION" at the top grab attention
-- Concrete examples show exactly what "opposite" means
-- Reminder at the end reinforces the behavior
-- Placement matters: prominent instructions override general guidelines
-
-**Why this matters:**
-- **Validates workflows**: Proves the FactChecker actually catches errors
-- **Tests iteration**: Demonstrates multi-round refinement works
-- **Instruction design**: Shows how to write emphatic agent instructions
-- **Production readiness**: Ensures QA agents aren't rubber stamps
-
-**Expected output:**
-- Round 1: Wrong answer saved to document
-- FactChecker: "⚠ NEEDS REVISION: [lists specific errors]"
-- Round 2: Correct answer saved
-- FactChecker: "✓ APPROVED: Answer is accurate, complete, and well-structured."
-
-**Compare with Exercises 1 & 2:**
-- Agent-based Manager: LLM coordination, could iterate but relies on Coordinator's judgment
-- Iterative Refinement (normal): Typically completes in one pass when content is good
-- Iterative Refinement (with errors): **Demonstrates revision loops** - catches errors and routes back for fixes
-
-**Key Insight**: The `iterative_selector()` function parses FactChecker responses for keywords like "NEEDS REVISION", "missing", "incomplete". When found, it intelligently routes back to Writer (for content issues) or Researcher (for missing information). This is deterministic logic that ensures quality validation actually happens.
-
-**Bonus challenges:**
-1. Change the critical instruction to introduce different types of errors (formatting, missing sections, etc.)
-2. Modify the FactChecker to be more or less strict
-3. Test what happens with 3+ revision rounds
-4. Try removing the prominent formatting - does it still work?
+3. Run and watch the FactChecker catch errors and trigger a revision loop
 
 ---
 
-## 📚 Workshop Structure
+## 🧩 Key Concepts
 
-| Time | Module | Activity |
-|------|--------|----------|
-| 10 min | Introduction | Why multi-agent? Pattern overview |
-| 30 min | Sequential | Build pipelines, add tools |
-| 25 min | Handoff | Dynamic routing, approvals |
-| 20 min | Group Chat | Collaborative workflows |
-| 5 min | Wrap-up | Pattern comparison, Q&A |
-
-**Total:** ~90 minutes
+| Concept | Description |
+|---------|-------------|
+| **Executors** | Workers that do tasks. AI Agents think and decide; Custom Executors follow rules. |
+| **Workflows** | Plans that connect workers—who does what and in what order. |
+| **Events** | Real-time status updates ("Started", "In Progress", "Completed"). |
 
 ---
 
-## 📖 Documentation
+## 🎯 When to Use Each Pattern
 
-- **[QUICKSTART.md](docs/QUICKSTART.md)** - Get started in 5 minutes
-- **[FACILITATOR_GUIDE.md](docs/FACILITATOR_GUIDE.md)** - For workshop leaders
-- **[CHEATSHEET.md](docs/CHEATSHEET.md)** - Quick reference guide
-- **[solutions/](solutions/)** - Completed exercise code
-
----
-
-## 🎓 Exercises
-
-### Exercise 1: Sequential Patterns (15 min)
-Run and modify sequential workflows. Observe how each agent builds on previous output.
-
-### Exercise 2: Add Custom Tool (10 min)
-Create a new tool (e.g., temperature converter) and register it with an agent.
-
-### Exercise 3: Handoff Scenarios (10 min)
-Test different routing scenarios with approval workflows.
-
-### Exercise 4: Group Chat Strategies (10 min)
-Compare simple sequential, iterative, and agent-managed workflows.
-
----
-
-## 🎯 Pattern Decision Guide
-
-**Choose Sequential when:**
-- Clear step-by-step process
-- Each stage builds on previous output
-- Example: Write → Review → Edit
-
-**Choose Handoff when:**
-- Dynamic routing based on request type
-- Specialized agents for different tasks
-- Example: Support ticket routing
-
-**Choose Group Chat when:**
-- Multiple perspectives needed
-- Collaborative problem-solving
-- Example: Research team
-
----
-
-## 🔧 Configuration
-
-### Environment Variables
-
-Create `.env` file or set:
-```bash
-AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com/
-AZURE_OPENAI_CHAT_DEPLOYMENT_NAME=gpt-4o
-```
-
-### Requirements
-
-```
-agent-framework
-azure-identity
-python-dotenv
-```
-
-Install: `pip install -r requirements.txt`
+| Pattern | Use When | Example |
+|---------|----------|---------|
+| **Sequential** | Clear step-by-step process | Write → Review → Edit |
+| **Handoff** | Dynamic routing by request type | Support ticket triage |
+| **Group Chat** | Multiple perspectives needed | Research team collaboration |
 
 ---
 
@@ -509,95 +216,12 @@ Install: `pip install -r requirements.txt`
 | Module not found | Activate venv: `.venv\Scripts\activate` |
 | Azure auth fails | Run `az login --identity` |
 | Agent no response | Check endpoint ends with `/` |
-| Tools not called | Verify type annotations |
-
-See [QUICKSTART.md](docs/QUICKSTART.md) for more troubleshooting.
 
 ---
 
-## 📊 What You'll Build
+## 📖 Resources
 
-### Sequential Pipeline
-```
-User Request
-    ↓
-Writer Agent (with calculator tool)
-    ↓
-Reviewer Agent (with word counter)
-    ↓
-Editor Agent
-    ↓
-Final Output
-```
-
-### Handoff System
-```
-User Request
-    ↓
-Triage Agent
-    ↓
-Dynamic routing to:
-- Refund Agent (with approval)
-- Order Agent (tracking tool)
-- Account Agent
-- Technical Agent
-```
-
-### Group Chat Team
-```
-Research Question
-    ↓
-Researcher (web search + docs)
-    ↓
-Writer (document creation)
-    ↓
-FactChecker (validation)
-    ↓
-Professional Markdown Document
-```
-
----
-
-## 📚 Additional Resources
-
-**Microsoft Documentation:**
-- [Agent Framework Overview](https://learn.microsoft.com/agent-framework)
-- [Sequential Orchestration](https://learn.microsoft.com/agent-framework/user-guide/workflows/orchestrations/sequential)
-- [Group Chat Orchestration](https://learn.microsoft.com/agent-framework/user-guide/workflows/orchestrations/group-chat)
-- [Handoff Orchestration](https://learn.microsoft.com/agent-framework/user-guide/workflows/orchestrations/handoff)
-
-**Code Samples:**
-- [Agent Framework GitHub](https://github.com/microsoft/agent-framework)
-- [Multi-Agent Examples](https://github.com/microsoft/agent-framework/tree/main/samples)
-
----
-
-## 🤝 Contributing
-
-This workshop is part of the Agent Workshop series:
-1. Azure AI Foundry Agents (Day 1)
-2. Model Context Protocol - MCP (Day 2)
-3. **Multi-Agent Orchestration (Day 3)** ← You are here
-
----
-
-## 📝 Next Steps
-
-After completing this workshop:
-1. Build a multi-agent system for your use case
-2. Explore nested workflows (combine patterns)
-3. Add custom executors for specialized processing
-4. Implement error handling and retry logic
-5. Deploy to production
-
----
-
-## ⏱️ Time Estimates
-
-- **Environment Setup:** 5 min
-- **Sequential Exercises:** 25 min
-- **Handoff Exercises:** 25 min
-- **Group Chat Exercises:** 20 min
-- **Q&A:** 5 min
-
-**Total:** 80-90 minutes
+- [QUICKSTART.md](docs/QUICKSTART.md) - Setup guide
+- [CHEATSHEET.md](docs/CHEATSHEET.md) - Quick reference
+- [solutions/](solutions/) - Completed exercise code
+- [FACILITATOR_GUIDE.md](docs/FACILITATOR_GUIDE.md) - For workshop leaders
