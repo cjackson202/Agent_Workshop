@@ -1,6 +1,98 @@
 """
-Handoff Orchestration Demo
-Demonstrates dynamic agent routing with specialized expertise
+Multi-Agent Handoff Orchestration System
+=========================================
+
+This workflow demonstrates dynamic agent routing where control is intelligently transferred
+between specialized agents based on the context of user requests, similar to a sophisticated
+customer support system with multiple departments.
+
+Architecture Overview:
+---------------------
+Five specialized agents work together through dynamic handoffs:
+
+1. **Triage Agent (Coordinator)**
+   - Front-line agent that receives initial requests
+   - Analyzes customer needs and routes to appropriate specialist
+   - Provides warm transfers with context explanations
+
+2. **Refund Agent**
+   - Handles refunds, returns, and damaged items
+   - Uses submit_refund() tool with approval workflow
+   - Can handoff to other specialists if needed
+
+3. **Order Agent**
+   - Manages shipping, tracking, and delivery issues
+   - Uses track_order() and cancel_order() tools
+   - Provides real-time order status updates
+
+4. **Account Agent**
+   - Handles login, password resets, and account settings
+   - Manages subscriptions and security concerns
+   - Can escalate to technical support if needed
+
+5. **Technical Agent**
+   - Troubleshoots product malfunctions
+   - Provides setup and usage guidance
+   - Can handoff to refund/order agents for resolutions
+
+Key Features:
+------------
+**Human-in-the-Loop (HITL) Approval:**
+- Sensitive operations (refunds, cancellations) require human approval
+- Clear approval prompts with action details
+- Users can approve or deny each action
+
+**Dynamic Handoffs:**
+- Agents intelligently transfer control based on request type
+- Two workflow modes:
+  - Basic: Triage routes to specialists (one-way)
+  - Advanced: Specialists can route to each other (multi-way)
+
+**Context Preservation:**
+- Full conversation history maintained across handoffs
+- Specialists receive complete context when taking over
+- Seamless user experience despite agent changes
+
+**Interactive Multi-turn Conversations:**
+- Real user input throughout the session
+- Natural back-and-forth dialogue
+- Agents can ask clarifying questions before acting
+
+Workflow Strategies:
+-------------------
+1. **Basic Handoff** (workflow_basic)
+   - Triage agent routes to specialists
+   - One-way transfers only
+   - Simple, predictable routing
+
+2. **Advanced Handoff** (workflow_advanced)
+   - Specialists can handoff to each other
+   - Complex multi-agent collaboration
+   - Return-to-previous capability enabled
+
+Demo Scenarios:
+--------------
+1. **Refund Request** - Demonstrates approval workflow for sensitive operations
+2. **Order Tracking** - Shows simple tool usage without approval
+3. **Complex Multi-Agent** - Multiple handoffs between specialists
+
+Example Flow:
+------------
+User: "My order 12345 arrived damaged. I need a refund."
+  → Triage Agent: Identifies refund need, transfers to Refund Agent
+  → Refund Agent: Gathers details, calls submit_refund()
+  → System: Prompts human for approval
+  → User: Approves refund
+  → Refund Agent: Confirms completion and provides timeline
+
+Use Cases:
+---------
+- Customer support systems with multiple departments
+- Help desk escalation workflows
+- Expert routing based on problem type
+- Financial operations requiring approval
+- Medical triage and specialist referrals
+- Technical support with tiered expertise levels
 """
 
 import asyncio

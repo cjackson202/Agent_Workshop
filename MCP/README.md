@@ -5,7 +5,7 @@
 This hands-on workshop teaches you how to:
 1. Create and run a custom MCP server
 2. Test MCP tools locally
-3. Integrate MCP servers with Azure AI Foundry agents
+3. Integrate MCP servers with **Azure AI Foundry** agents and **Microsoft Agent Framework**
 4. Build extensible AI agents with custom tool capabilities
 
 **Duration:** ~1.5 hours  
@@ -100,7 +100,7 @@ The `requirements.txt` includes:
 Since we're using Azure ML Notebooks, authenticate using managed identity:
 
 ```bash
-az login --identity
+az login --identity --identity
 ```
 ***Note***: User object will need the `Azure AI User` role assigned.
 
@@ -128,7 +128,7 @@ os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"] = "gpt-4o-mini"
 7. **Copy the Agent ID** from the agent details page
 8. Paste the Agent ID into [get_agent_mi.py](get_agent_mi.py) in the `AGENT_ID` variable
 
-> **Authentication Note:** We're using Azure CLI Managed Identity authentication in Azure ML Notebooks. The `az login --identity` command authenticates using the notebook's managed identity.
+> **Authentication Note:** We're using Azure CLI Managed Identity authentication in Azure ML Notebooks. The `az login --identity --identity` command authenticates using the notebook's managed identity.
 
 ---
 
@@ -356,7 +356,151 @@ User Input → Azure AI Agent → MCP Server (localhost:8080) → Tool Execution
 
 ---
 
-### Exercise 4: Advanced Customization (20 mins)
+### Exercise 4: Maintaining Conversation Memory (15 mins)
+
+**Goal:** Enable the agent to remember conversation context across multiple messages in a single session.
+
+#### 4.1 Understanding the Problem
+
+By default, each agent call might create a new thread, causing the agent to forget previous messages. This means:
+- ❌ Agent can't reference what you said earlier
+- ❌ Multi-turn conversations don't work well
+- ❌ User has to repeat context every time
+
+**What we want:**
+- ✅ Agent remembers the conversation
+- ✅ Can reference previous messages
+- ✅ Natural multi-turn dialogue
+
+#### 4.2 The Solution: Persistent Threads
+
+**Step 1: Locate the code in [get_agent_mi.py](get_agent_mi.py)**
+
+Open [get_agent_mi.py](get_agent_mi.py) and find this section (around line 130):
+
+```python
+try:
+    print("\n" + "="*60)
+    print("💬 Interactive Chat Mode")
+    print("="*60)
+    print("Chatting with your existing agent + MCP tools")
+    print("Type 'exit', 'quit', or 'q' to end")
+    print("="*60 + "\n")
+    
+    while True:
+        try:
+            # Get user input
+            user_input = input("You: ").strip()
+```
+
+**Step 2: Add thread creation**
+
+Add this line RIGHT AFTER the print statements and BEFORE the `while True:` loop:
+
+```python
+# Conversation history is maintained in memory for this thread
+thread = agent.get_new_thread()
+```
+
+Your code should now look like:
+
+```python
+try:
+    print("\n" + "="*60)
+    print("💬 Interactive Chat Mode")
+    print("="*60)
+    print("Chatting with your existing agent + MCP tools")
+    print("Type 'exit', 'quit', or 'q' to end")
+    print("="*60 + "\n")
+
+    # Conversation history is maintained in memory for this thread
+    thread = agent.get_new_thread()
+    
+    while True:
+```
+
+**Step 3: Update the agent.run() call**
+
+Find this line (around line 155):
+
+```python
+result = await agent.run(user_input)
+```
+
+Change it to pass the thread:
+
+```python
+result = await agent.run(user_input, thread=thread)
+```
+
+**Step 4: Save your changes**
+
+Save [get_agent_mi.py](get_agent_mi.py) and restart the script:
+
+```bash
+# Stop the current script (Ctrl+C if running)
+python get_agent_mi.py
+```
+
+**Key Points:**
+- `agent.get_new_thread()` creates a new conversation thread
+- Passing `thread=thread` ensures all messages use the same context
+- The thread maintains full conversation history
+
+#### 4.3 Test Conversation Memory
+
+**Test the agent's memory with these prompts:**
+
+1. **Establish context:**
+   ```
+   You: My name is Alex and I love Math
+   ```
+
+2. **Reference previous message:**
+   ```
+   You: What's my name?
+   Assistant: Your name is Alex!
+   ```
+
+3. **Multi-step reasoning:**
+   ```
+   You: Calculate 25 + 30
+   Assistant: 55
+   
+   You: Now multiply that by 2
+   Assistant: 110  (remembers the 55 from previous message)
+   ```
+
+4. **Context-aware conversation:**
+   ```
+   You: I need help with math homework
+   Assistant: [helpful response]
+   
+   You: Can you give me an example?
+   Assistant: [provides example related to math homework]
+   ```
+
+#### 4.4 Understanding Threads
+
+**What is a Thread?**
+- A thread is a conversation session that stores all messages
+- Each thread has a unique ID
+- Messages in a thread are ordered chronologically
+- Agents can see previous messages in the thread
+
+**Thread Lifecycle:**
+```
+Session Start → Create Thread → Message 1 → Message 2 → ... → Session End
+                     ↓
+               (thread persists in memory)
+```
+
+**Important Notes:**
+- Threads are session-based (exist while script runs)
+- When you restart `get_agent_mi.py`, a new thread is created
+- For persistent memory across script restarts, you'd need to store thread IDs
+
+### Exercise 5: Advanced Customization (20 mins)
 
 **Goal:** Extend your MCP server with real-world capabilities.
 
@@ -389,7 +533,7 @@ def get_temperature_advice(temperature: int) -> str:
 2. Restart your agent script (`python get_agent_mi.py`)
 3. Try: `"What should I wear if it's 45 degrees?"`
 
-#### 4.2 Challenge: Add Your Own Tool
+#### 5.2 Challenge: Add Your Own Tool
 
 **Ideas for custom tools:**
 - `calculate_percentage(value, total)` - Calculate percentage
@@ -403,7 +547,7 @@ def get_temperature_advice(temperature: int) -> str:
 - Must include a descriptive docstring
 - Should include helpful debug logging
 
-#### 4.3 Test Your Custom Tool
+#### 5.3 Test Your Custom Tool
 
 1. Add your tool to [server.py](server.py)
 2. Restart the MCP server
@@ -450,7 +594,7 @@ By the end of this workshop, you should be able to:
 **Solution:**
 ```bash
 # For Azure ML Notebooks (Managed Identity)
-az login --identity
+az login --identity --identity
 az account show  # Verify correct subscription
 ```
 

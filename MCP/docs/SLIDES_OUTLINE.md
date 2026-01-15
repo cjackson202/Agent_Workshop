@@ -150,7 +150,7 @@ Your Machine                    Azure Cloud
 
 Before we start, ensure you have:
 - ✅ Python 3.10+
-- ✅ Azure CLI (`az login` completed)
+- ✅ Azure CLI (`az login --identity` completed)
 - ✅ Azure AI Foundry project
 - ✅ GPT model deployment
 - ✅ Code editor (VS Code recommended)
@@ -300,7 +300,7 @@ def add(a: int, b: int) -> int:
 - Review agent instructions
 
 **Azure auth errors?**
-- Run `az login`
+- Run `az login --identity`
 - Verify: `az account show`
 - Check endpoint URL is correct
 
@@ -696,7 +696,7 @@ Choose your path:
 netstat -ano | findstr :8080
 
 # Test Azure auth
-az login
+az login --identity
 az account show
 
 # Reinstall dependencies

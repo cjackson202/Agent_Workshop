@@ -258,7 +258,7 @@ Agent Reasoning:
 
 Your Machine                    Azure Active Directory
      │                                   │
-     │  1. az login                     │
+     │  1. az login --identity                     │
      ├──────────────────────────────────►│
      │                                   │
      │  2. Token granted                │

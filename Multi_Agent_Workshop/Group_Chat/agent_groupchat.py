@@ -1,6 +1,65 @@
 """
-Group Chat Orchestration Demo with Web Search
-Demonstrates collaborative multi-agent workflows with actual research capabilities
+Multi-Agent Collaborative Research System
+==========================================
+
+This workflow demonstrates how specialized AI agents collaborate as a research team to answer
+complex questions, validate information quality, and produce professional documentation.
+
+Architecture Overview:
+---------------------
+Three specialized agents work together in a coordinated workflow:
+
+1. **Researcher Agent**
+   - Gathers information using web search and technical documentation tools
+   - Produces factual, cited research findings with sources
+   - Tools: web_search(), get_technical_docs()
+
+2. **Writer Agent**
+   - Synthesizes research into well-structured, professional markdown content
+   - Organizes information with clear sections, formatting, and examples
+   - Saves final output as timestamped markdown files in output/ directory
+   - Tools: save_to_document()
+
+3. **FactChecker Agent**
+   - Validates accuracy, completeness, and proper use of research findings
+   - Identifies missing information or errors
+   - Provides approval/rejection verdict with specific feedback
+
+Workflow Strategies:
+-------------------
+Two orchestration approaches are available:
+
+1. **Agent-Based Manager** (workflow_agent_manager)
+   - Coordinator agent intelligently selects next speaker based on context
+   - Adaptive to conversation needs
+   - Best for complex, multi-faceted questions
+
+2. **Iterative Refinement** (workflow_iterative)
+   - Allows multiple research/writing rounds if quality issues found
+   - FactChecker can request additional information
+   - Best for ensuring comprehensive, high-quality answers
+
+Output:
+-------
+Produces professionally formatted markdown documents with:
+- Structured sections (introduction, key points, examples, conclusion)
+- Proper markdown formatting and citations
+- Metadata (author, date, generation info)
+- Saved to output/ directory with timestamp
+
+Example Usage:
+-------------
+    # Run the simple sequential workflow
+    task = "What are the key benefits of async/await in Python?"
+    await run_group_chat(workflow_simple, task, "Simple Sequential Workflow")
+
+Key Features:
+------------
+- Tool-enabled agents (web search, documentation retrieval, document creation)
+- Streaming real-time agent responses for visibility
+- Multiple orchestration patterns (sequential, agent-managed, iterative)
+- Quality validation and iterative refinement capabilities
+- Professional document generation with proper formatting
 """
 
 import asyncio
@@ -34,7 +93,7 @@ if not os.getenv("AZURE_OPENAI_ENDPOINT"):
     os.environ["AZURE_OPENAI_ENDPOINT"] = "https://your-resource.openai.azure.com/"  # Change to your endpoint
 
 # Initialize chat client
-# Note: Requires 'az login' to be completed first
+# Note: Requires 'az login --identity' to be completed first
 chat_client = AzureOpenAIChatClient(
     credential=AzureCliCredential(),
     # Uncomment to override environment variables:
@@ -54,6 +113,7 @@ def web_search(query: Annotated[str, "The search query to look up"]) -> str:
     In a real implementation, this would call Bing Search API or similar.
     For demo purposes, returns mock search results.
     """
+    print(f"\n{'-'*50}\nWeb Search tool invoked by Researcher\n{'-'*50}\n")
     # Mock search results for demonstration
     mock_results = {
         "async": {
@@ -94,6 +154,7 @@ def get_technical_docs(topic: Annotated[str, "The technical topic to get documen
     
     In a real implementation, this could query a documentation database or API.
     """
+    print(f"\n{'-'*50}\nTechnical Documentation tool invoked by Researcher\n{'-'*50}\n")
     docs = {
         "async": """
 Python Async/Await Documentation:
@@ -140,6 +201,7 @@ def save_to_document(
     Creates a well-formatted document with metadata, proper formatting,
     and saves it to the output directory.
     """
+    print(f"\n{'-'*50}\nDocument Saving tool invoked by Writer\n{'-'*50}\n")
     import datetime
     
     # Create output directory if it doesn't exist
@@ -194,6 +256,48 @@ This document provides a comprehensive answer to the question: "{title}"
     return f"✓ Document saved successfully to: {filepath}\n\nFile contains {len(content.split())} words across {len(content.split(chr(10)))} lines."
 
 
+def read_saved_document(filename: Annotated[str, "The filename of the document to read from the output directory, or leave empty to read the most recent document"] = "") -> str:
+    """
+    Reads a saved document from the output directory for review.
+    
+    Use this to verify what was actually written and saved to a document.
+    Useful for the FactChecker to validate the Writer's work.
+    """
+    print(f"\n{'-'*50}\nDocument Reading tool invoked by FactChecker\n{'-'*50}\n")
+    output_dir = "output"
+    
+    # If no filename provided, get the most recent file
+    if not filename:
+        try:
+            files = [f for f in os.listdir(output_dir) if f.endswith('.md')]
+            if files:
+                # Get the most recent file
+                files.sort(key=lambda x: os.path.getmtime(os.path.join(output_dir, x)), reverse=True)
+                filename = files[0]
+            else:
+                return f"Error: No documents found in {output_dir} directory."
+        except Exception as e:
+            return f"Error: Could not access output directory. {str(e)}"
+    
+    # If filename doesn't include .md, add it
+    if not filename.endswith('.md'):
+        filename = filename + '.md'
+    
+    filepath = os.path.join(output_dir, filename)
+    
+    # Check if file exists
+    if not os.path.exists(filepath):
+        return f"Error: File {filename} not found in {output_dir} directory."
+    
+    # Read the file
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            content = f.read()
+        return f"[Document: {filename}]\n\n{content}"
+    except Exception as e:
+        return f"Error reading file {filepath}: {str(e)}"
+
+
 # =============================================================================
 # 3. DEFINE SPECIALIZED AGENTS WITH TOOLS
 # =============================================================================
@@ -226,17 +330,32 @@ Guidelines:
 2. Organize information into a logical structure with clear sections:
    - Introduction/Overview
    - Key Points (with subheadings)
-   - Examples or Use Cases
+   - Examples or Use Cases (if applicable)
+   - Sources/References
    - Conclusion or Summary
 3. Write in a clear, professional tone using markdown formatting
 4. Use proper markdown: ## for headings, **bold** for emphasis, - for bullets, ``` for code
-5. After composing your answer, ALWAYS use save_to_document() to create the final document
-6. Call save_to_document with:
+5. IMPORTANT: Show your complete answer in your response FIRST, so the FactChecker can review it
+6. After showing your answer, call save_to_document() with:
    - title: The question being answered
-   - content: Your complete, well-formatted answer
+   - content: Your complete, well-formatted answer (the same content you just showed)
    - author: "AI Research Team"
+7. Report the result of the save operation
 
-Make your response comprehensive, well-formatted, and professional.""",
+**CRITICAL SOURCE ATTRIBUTION RULES:**
+- ONLY cite sources that the Researcher explicitly provided
+- DO NOT add, invent, or hallucinate additional sources
+- Copy the exact source citations from the Researcher's findings
+- If the Researcher provided limited sources, that's fine - use only those
+- Never add links or references that weren't in the Researcher's output
+
+Format your response like this:
+---
+[Your complete formatted answer here with all sections]
+---
+I've saved this answer using save_to_document().
+
+Make your response comprehensive and well-formatted, but use ONLY the research and sources provided by the Researcher.""",
     tools=[save_to_document],
     chat_client=chat_client,
 )
@@ -245,35 +364,40 @@ Make your response comprehensive, well-formatted, and professional.""",
 fact_checker = ChatAgent(
     name="FactChecker",
     description="Validates the accuracy and completeness of information.",
-    instructions="""You are a fact checker and quality assurance specialist. Your job is to VALIDATE the work done by the team, not restate it.
+    instructions="""You are a fact checker and quality assurance specialist. Review the saved document to verify the Writer's work.
 
 Your responsibilities:
 
-1. **Verify Research Usage**: Check if the Writer correctly used the Researcher's findings
-   - Are all key points from the research included?
-   - Is any information misrepresented or exaggerated?
-   - Are the sources/citations accurate?
+1. **Read the Saved Document**: ALWAYS start by calling read_saved_document() to see what was actually written and saved
 
-2. **Check Completeness**: Identify what's missing
-   - Did the Writer address all aspects of the original question?
+2. **Verify Research Usage**: Check if the document correctly used the Researcher's findings
+   - Are the key points from the research included?
+   - Is the information accurate?
+   - Are sources properly credited **exactly as the Researcher provided them**?
+   - Did the Writer add any sources that the Researcher didn't provide? (This is NOT allowed)
+
+3. **Check Completeness**: Identify what's missing
+   - Did the answer address all aspects of the original question?
    - Are there important details from the research that were omitted?
-   - Should any additional context be provided?
+   - Is the structure clear (introduction, key points, examples, conclusion)?
 
-3. **Validate Document Creation**: Confirm the document was saved
-   - Did the Writer call save_to_document()?
-   - Was the document creation successful?
+4. **Identify Specific Issues**: Point out concrete problems
+   - Which specific research points are missing?
+   - What information is unclear or needs elaboration?
+   - Are there factual errors?
 
-4. **Identify Issues**: Point out specific problems if found
-   - Factual errors or contradictions
-   - Unclear explanations
-   - Missing information
+5. **Provide Clear Verdict**: End with ONE of these:
+   - "✓ APPROVED: Answer is accurate, complete, and well-structured."
+   - "⚠ NEEDS REVISION: [list 2-3 specific, actionable changes needed]"
+   - "✗ REJECTED: [critical factual errors that require complete rework]"
 
-5. **Provide Clear Verdict**: End with one of these:
-   - "✓ APPROVED: Answer is accurate, complete, and well-documented."
-   - "⚠ NEEDS REVISION: [specific issues found]"
-   - "✗ REJECTED: [critical problems that require complete rework]"
-
-Be critical but constructive. Don't just summarize - VALIDATE.""",
+IMPORTANT:
+- ALWAYS call read_saved_document() first to see the actual content
+- Be reasonable - if the Writer addressed the main points adequately, approve it
+- Focus on CONTENT quality in the saved document
+- Give specific, actionable feedback, not vague complaints
+- If you see the same issue twice in a row, APPROVE it to avoid infinite loops""",
+    tools=[read_saved_document],
     chat_client=chat_client,
 )
 
@@ -282,43 +406,11 @@ Be critical but constructive. Don't just summarize - VALIDATE.""",
 # 4. SPEAKER SELECTION STRATEGIES
 # =============================================================================
 
-def simple_selector(state: GroupChatStateSnapshot) -> str | None:
-    """
-    Simple workflow: Researcher → Writer → FactChecker → Done
-    
-    Args:
-        state: Contains task, participants, conversation, history, and round_index
-    
-    Returns:
-        Name of next speaker, or None to finish
-    """
-    round_idx = state["round_index"]
-    history = state["history"]
-    
-    # Maximum 6 rounds for safety
-    if round_idx >= 6:
-        return None
-    
-    # Start with Researcher
-    if round_idx == 0:
-        return "Researcher"
-    
-    last_speaker = history[-1].speaker if history else None
-    
-    # Workflow: Researcher → Writer → FactChecker → Done
-    if last_speaker == "Researcher":
-        return "Writer"
-    elif last_speaker == "Writer":
-        return "FactChecker"
-    elif last_speaker == "FactChecker":
-        return None  # End the conversation
-    
-    return "Researcher"  # Fallback
-
-
 def iterative_selector(state: GroupChatStateSnapshot) -> str | None:
     """
-    Iterative refinement: Researcher → Writer → FactChecker → (optional round 2) → Done
+    Iterative refinement: Researcher → Writer → FactChecker → (Writer or Researcher if needed) → Done
+    
+    Intelligently routes back to Writer or Researcher based on FactChecker feedback.
     
     Args:
         state: Contains task, participants, conversation, history, and round_index
@@ -330,8 +422,8 @@ def iterative_selector(state: GroupChatStateSnapshot) -> str | None:
     conversation = state["conversation"]
     history = state["history"]
     
-    # Maximum 8 rounds (allows for 2 full cycles if needed)
-    if round_idx >= 8:
+    # Maximum 10 rounds (allows for multiple revision cycles)
+    if round_idx >= 10:
         return None
     
     # First round: always start with researcher
@@ -343,19 +435,29 @@ def iterative_selector(state: GroupChatStateSnapshot) -> str | None:
     last_text = getattr(last_message, "text", "").lower() if last_message else ""
     
     # After Researcher: go to Writer
-    if last_speaker == "Researcher" and round_idx <= 3:
+    if last_speaker == "Researcher":
         return "Writer"
     
     # After Writer: go to FactChecker for review
-    if last_speaker == "Writer" and round_idx <= 4:
+    if last_speaker == "Writer":
         return "FactChecker"
     
-    # After FactChecker: check if additional research is needed
+    # After FactChecker: intelligently decide next step based on feedback
     if last_speaker == "FactChecker":
-        if "missing" in last_text or "need more" in last_text or "incomplete" in last_text:
-            return "Researcher"  # Do another round
-        else:
-            return None  # All good, finish
+        # Check if approved - if so, we're done
+        if "approved" in last_text or "✓" in last_text:
+            return None
+        
+        # Check if more research/information is needed
+        if any(keyword in last_text for keyword in ["missing information", "need more", "incomplete research", "additional research", "gather more"]):
+            return "Researcher"  # Need more information
+        
+        # Otherwise, it's a writing/formatting issue - send back to Writer
+        if any(keyword in last_text for keyword in ["needs revision", "rejected", "incomplete", "missing", "not included", "did not"]):
+            return "Writer"  # Fix the writing/formatting
+        
+        # Default: end if no clear issue identified
+        return None
     
     # Default: end the conversation
     return None
@@ -376,7 +478,7 @@ Selection guidelines:
 1. Always start with Researcher to gather information using available tools
 2. After research is complete, have Writer create the answer
 3. Have FactChecker review for accuracy
-4. If FactChecker finds issues, send back to Researcher for more info
+4. If FactChecker finds issues, send back to Researcher for more info or Writer for revisions
 5. Finish when answer is complete and validated
 
 Consider the conversation context and task requirements when selecting speakers.""",
@@ -388,15 +490,7 @@ Consider the conversation context and task requirements when selecting speakers.
 # 5. BUILD WORKFLOWS
 # =============================================================================
 
-# Option A: Simple sequential workflow (Researcher → Writer → FactChecker)
-workflow_simple = (
-    GroupChatBuilder()
-    .set_select_speakers_func(simple_selector, display_name="SimpleOrchestrator")
-    .participants([researcher, writer, fact_checker])
-    .build()
-)
-
-# Option B: Agent-based manager (intelligent coordination)
+# Option A: Agent-based manager (intelligent coordination)
 workflow_agent_manager = (
     GroupChatBuilder()
     .set_manager(coordinator, display_name="Orchestrator")
@@ -407,7 +501,7 @@ workflow_agent_manager = (
     .build()
 )
 
-# Option C: Iterative refinement workflow (allows for multiple rounds if needed)
+# Option B: Iterative refinement workflow (allows for multiple rounds if needed)
 workflow_iterative = (
     GroupChatBuilder()
     .set_select_speakers_func(iterative_selector, display_name="IterativeOrchestrator")
@@ -486,13 +580,10 @@ async def main():
     
     # Choose which workflow to run (uncomment one):
     
-    # 1. Simple sequential workflow (Researcher → Writer → FactChecker)
-    await run_group_chat(workflow_simple, tasks[0], "Simple Sequential Workflow with Research Tools")
+    # 1. Agent-based manager (intelligent coordination) - uncomment to try
+    await run_group_chat(workflow_agent_manager, tasks[0], "Agent-Based Manager Workflow")
     
-    # 2. Agent-based manager (intelligent coordination) - uncomment to try
-    # await run_group_chat(workflow_agent_manager, tasks[0], "Agent-Based Manager Workflow")
-    
-    # 3. Iterative refinement (allows multiple rounds) - uncomment to try
+    # 2. Iterative refinement (allows multiple rounds if FactChecker finds issues)
     # await run_group_chat(workflow_iterative, tasks[0], "Iterative Refinement Workflow")
     
     # Try multiple tasks in sequence (uncomment to run all)
@@ -500,7 +591,7 @@ async def main():
     #     print(f"\n\n{'='*80}")
     #     print(f"RUNNING TASK {i}/{len(tasks)}")
     #     print(f"{'='*80}\n")
-    #     await run_group_chat(workflow_simple, task, f"Task {i}")
+    #     await run_group_chat(workflow_iterative, task, f"Task {i}")
     #     await asyncio.sleep(2)  # Brief pause between tasks
 
 

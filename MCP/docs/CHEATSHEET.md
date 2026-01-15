@@ -13,7 +13,7 @@ source .venv/bin/activate
 pip install -r requirements.txt --pre
 
 # Azure Login (Managed Identity)
-az login --identity
+az login --identity --identity
 az account show
 
 # Start MCP Server (Terminal 1 - keep running)
@@ -96,7 +96,7 @@ Find project endpoint in: **Azure AI Foundry Studio → Project Settings**
 |-------|-----------|
 | "Connection refused" | Start server: `python server.py` |
 | "Port 8080 in use" | `netstat -an \| grep :8080` then kill process |
-| "Azure auth failed" | Run: `az login --identity` (Azure ML) |
+| "Azure auth failed" | Run: `az login --identity --identity` (Azure ML) |
 | "Module not found" | Activate venv: `source .venv/bin/activate` then `pip install -r requirements.txt --pre` |
 | "venv not activated" | Run: `source .venv/bin/activate` |
 | "Tool not found" | Restart server after adding tool |
@@ -217,7 +217,7 @@ By end of workshop, you should have:
 **We use Managed Identity (MI):**
 - Simpler than Service Principal
 - Uses Azure CLI credentials
-- Run `az login` once, you're authenticated
+- Run `az login --identity` once, you're authenticated
 - Good for development
 
 **For production:** Consider Service Principal (SP)

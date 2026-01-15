@@ -64,7 +64,7 @@
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt --pre
-az login --identity
+az login --identity --identity
 
 # Terminal 1 - Start Server
 cd /path/to/ERM_Agents_Workshop/MCP
@@ -202,7 +202,7 @@ pip list | grep mcp
 **Scenario: "Azure authentication failed"**
 ```bash
 # Re-authenticate (Azure ML Notebooks with Managed Identity)
-az login --identity
+az login --identity --identity
 az account show
 az account set --subscription "subscription-name"
 ```
@@ -251,7 +251,7 @@ Issue: Participant stuck
 │   ├── Wrong URL → verify localhost:8080
 │   └── Tool not found → restart server
 ├── Azure agent failing?
-│   ├── Auth error → az login
+│   ├── Auth error → az login --identity
 │   ├── Wrong endpoint → check Azure portal
 │   └── Model error → verify deployment
 └── Tool not working?

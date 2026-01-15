@@ -4,7 +4,7 @@ Welcome to the **Azure AI Agent Workshop**! This hands-on training teaches you h
 
 ## 🎯 Workshop Overview
 
-This workshop is divided into three complementary modules:
+This workshop is divided into four complementary modules:
 
 ### **Module 1: Azure AI Foundry Agents** (Portal Experience)
 Learn to create agents in Azure AI Foundry portal using no-code/low-code approaches.
@@ -12,13 +12,19 @@ Learn to create agents in Azure AI Foundry portal using no-code/low-code approac
 - **Level:** Beginner to Intermediate
 - **Focus:** Agent creation, knowledge grounding, tool integration
 
-### **Module 2: Model Context Protocol (MCP)** (Programmatic Access)
+### **Module 2: Microsoft Agent Framework** (Code Introduction)
+Learn to connect your Foundry agent to Python code and configure tracing.
+- **Duration:** ~30 minutes
+- **Level:** Beginner to Intermediate
+- **Focus:** Agent Framework basics, OpenTelemetry tracing, conversation threading
+
+### **Module 3: Model Context Protocol (MCP)** (Custom Tools)
 Learn to connect MCP tools with Microsoft Agent Framework and Azure AI Foundry agents.
 - **Duration:** ~90 minutes
 - **Level:** Intermediate
 - **Focus:** MCP integration with Foundry, Agent Framework, custom tool development
 
-### **Module 3: Multi-Agent Orchestration** (Advanced Workflows)
+### **Module 4: Multi-Agent Orchestration** (Advanced Workflows)
 Learn to coordinate multiple AI agents using Microsoft Agent Framework orchestration patterns.
 - **Duration:** ~60 minutes
 - **Level:** Intermediate to Advanced
@@ -32,15 +38,23 @@ A customer-facing agent that:
 - ✅ Gathers competitive intelligence from the web
 - ✅ Answers customer questions with friendly, professional responses
 
-### Custom MCP Tools (Module 2)
-Programmatic integration with Microsoft Agent Framework:
+### Agent Framework Integration (Module 2)
+Connect your Foundry agent to Python code:
+- ✅ Pull your agent from Azure AI Foundry into code
+- ✅ Configure OpenTelemetry tracing with Azure Monitor
+- ✅ View traces and monitor agent performance
+- ✅ Enable conversation threading for multi-turn chats
+- ✅ Build interactive chatbot experiences
+
+### Custom MCP Tools (Module 3)
+Build custom tools with Model Context Protocol (separate agent):
 - ✅ Create custom MCP servers with specialized tools
-- ✅ Connect MCP to Azure AI Foundry agents
+- ✅ Build a new agent with MCP tool integration
 - ✅ Use Microsoft Agent Framework for orchestration
 - ✅ Test and debug MCP-Foundry integration locally
 - ✅ Deploy production-ready agent workflows
 
-### Multi-Agent Orchestrations (Module 3)
+### Multi-Agent Orchestrations (Module 4)
 Coordinate multiple AI agents for complex workflows:
 - ✅ Build collaborative research teams with group chat
 - ✅ Create sequential processing pipelines
@@ -69,7 +83,16 @@ Coordinate multiple AI agents for complex workflows:
                   │ Your agent is ready!
                   ▼
 ┌─────────────────────────────────────────────────────┐
-│  Module 2: Model Context Protocol (Code)           │
+│  Module 2: MSFT Agent Framework (Code Intro)       │
+│  ├─ Exercise 1: Environment setup (5 min)          │
+│  ├─ Exercise 2: Connect to Foundry agent (10 min)  │
+│  ├─ Exercise 3: Enable tracing (10 min)            │
+│  └─ Exercise 4: Conversation threading (5 min)     │
+└─────────────────┬───────────────────────────────────┘
+                  │ Agent in code with tracing!
+                  ▼
+┌─────────────────────────────────────────────────────┐
+│  Module 3: Model Context Protocol (Custom Tools)   │
 │  ├─ Exercise 1: Setup & local testing (30 min)     │
 │  ├─ Exercise 2: Create MCP server (30 min)         │
 │  ├─ Exercise 3: Connect to agent (20 min)          │
@@ -78,7 +101,7 @@ Coordinate multiple AI agents for complex workflows:
                   │ Add custom tools!
                   ▼
 ┌─────────────────────────────────────────────────────┐
-│  Module 3: Multi-Agent Orchestration (Advanced)    │
+│  Module 4: Multi-Agent Orchestration (Advanced)    │
 │  ├─ Demo 1: Group chat orchestration (20 min)      │
 │  ├─ Demo 2: Sequential pipelines (15 min)          │
 │  ├─ Demo 3: Handoff routing (20 min)               │
@@ -109,7 +132,29 @@ Coordinate multiple AI agents for complex workflows:
 
 ---
 
-### Module 2: Model Context Protocol (MCP)
+### Module 2: Microsoft Agent Framework
+
+**Location:** [`MSFT_Agent_Framework/`](MSFT_Agent_Framework/)
+
+**What you'll learn:**
+- Connecting to Foundry agents from Python code
+- Using the **Microsoft Agent Framework** library
+- Configuring **OpenTelemetry tracing** with Azure Monitor
+- Viewing traces in Azure AI Foundry portal
+- Managing **conversation threading** for multi-turn chats
+- Building interactive chatbot experiences
+
+**Key Files:**
+- [README.md](MSFT_Agent_Framework/README.md) - Complete workshop guide
+- [foundry_agent_starter.py](MSFT_Agent_Framework/foundry_agent_starter.py) - Workshop starter script
+- [foundry_agent.py](MSFT_Agent_Framework/foundry_agent.py) - Completed solution
+- [docs/QUICKSTART.md](MSFT_Agent_Framework/docs/QUICKSTART.md) - Quick reference
+
+**Start Here:** [MSFT_Agent_Framework/README.md](MSFT_Agent_Framework/README.md)
+
+---
+
+### Module 3: Model Context Protocol (MCP)
 
 **Location:** [`MCP/`](MCP/)
 
@@ -135,7 +180,7 @@ Coordinate multiple AI agents for complex workflows:
 
 ---
 
-### Module 3: Multi-Agent Orchestration
+### Module 4: Multi-Agent Orchestration
 
 **Location:** [`Multi_Agent_Demo/`](Multi_Agent_Demo/)
 
@@ -171,22 +216,27 @@ Coordinate multiple AI agents for complex workflows:
 **Complete All Modules (Recommended):**
 1. Start with **Module 1** to understand agents in the portal
 2. Create your agent with File Search and Bing Grounding
-3. Proceed to **Module 2** to add custom tools programmatically
-4. Connect your MCP server to the agent you created
-5. Explore **Module 3** to learn multi-agent orchestration patterns
+3. Proceed to **Module 2** to connect your agent to Python code with tracing
+4. Continue to **Module 3** to learn MCP custom tool development (creates separate agent)
+5. Explore **Module 4** to learn multi-agent orchestration patterns
 6. Build collaborative agent systems with specialized roles
 
 **Portal Experience Only:**
 - Complete **Module 1** for no-code/low-code agent creation
 - Perfect for business users, product managers, and beginners
 
+**Code Introduction:**
+- Complete **Module 1** then **Module 2** for a gentle intro to Agent Framework
+- Learn to pull agents into code and configure tracing
+- Great stepping stone before MCP or Multi-Agent modules
+
 **Developer Deep-Dive:**
-- Skip to **Module 2** if you already have a Foundry agent
-- Focuses on programmatic access and custom tool development
+- Skip to **Module 3** if you already have a Foundry agent and understand Agent Framework
+- Focuses on custom tool development with MCP
 - Best for developers and engineers
 
 **Advanced Orchestration:**
-- Jump to **Module 3** if you understand Agent Framework basics
+- Jump to **Module 4** if you understand Agent Framework basics
 - Learn group chat, sequential, and handoff patterns
 - Ideal for architects designing complex agent systems
 
@@ -196,21 +246,23 @@ Coordinate multiple AI agents for complex workflows:
 ┌─────────────────────────────────────────────────────────────┐
 │              Azure AI Foundry Platform                      │
 │                                                             │
-│  ┌──────────────────────────────────────────────────────┐  │
-│  │        Contoso Sales Agent (Foundry Agent)           │  │
-│  │  (Created in Module 1, Extended in Module 2)         │  │
-│  └────────────┬──────────────────────────┬───────────────┘  │
-│               │                          │                  │
-│    ┌──────────▼────────┐      ┌─────────▼──────────────┐   │
-│    │  Built-in Tools   │      │ Microsoft Agent        │   │
-│    │                   │      │ Framework + MCP        │   │
-│    ├───────────────────┤      ├────────────────────────┤   │
-│    │ • File Search     │      │ • MCP Tool Integration │   │
-│    │ • Bing Grounding  │      │ • Custom MCP Servers   │   │
-│    │ • Code Interpreter│      │ • Agent Orchestration  │   │
-│    └───────────────────┘      └────────────────────────┘   │
-│         Module 1                    Module 2                │
-│      (Portal Setup)          (Agent Framework + MCP)        │
+│  ┌──────────────────────────────┐  ┌──────────────────────┐│
+│  │   Contoso Sales Agent       │  │    MCP Demo Agent    ││
+│  │   (Modules 1 & 2)           │  │    (Module 3)        ││
+│  └────────────┬────────────────┘  └──────────┬───────────┘│
+│               │                              │             │
+│    ┌──────────▼────────┐      ┌─────────────▼──────────┐  │
+│    │  Built-in Tools   │      │   Custom MCP Tools     │  │
+│    ├───────────────────┤      ├────────────────────────┤  │
+│    │ • File Search     │      │ • MCP Server           │  │
+│    │ • Bing Grounding  │      │ • Custom Functions     │  │
+│    │ • Code Interpreter│      │ • Local Testing        │  │
+│    └───────────────────┘      └────────────────────────┘  │
+│                                                            │
+│  ┌────────────────────────────────────────────────────┐   │
+│  │       Multi-Agent Orchestration (Module 4)         │   │
+│  │  • Group Chat  • Sequential  • Handoff Patterns    │   │
+│  └────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -223,17 +275,42 @@ Coordinate multiple AI agents for complex workflows:
 https://ai.azure.com
 ```
 
-### Module 2 Setup (10 minutes)
+### Module 2 Setup (5 minutes)
 ```bash
-# Clone or navigate to workshop directory
+# Navigate to MSFT Agent Framework directory
+cd MSFT_Agent_Framework/
+
+# Create Python virtual environment
+python -m venv .venv
+
+# Activate virtual environment
+# Windows PowerShell:
+.\.venv\Scripts\Activate.ps1
+# Windows CMD:
+.venv\Scripts\activate.bat
+# macOS/Linux:
+source .venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Login to Azure
+az login --identity 
+```
+
+### Module 3 Setup (10 minutes)
+```bash
+# Navigate to MCP directory
 cd MCP/
 
 # Create Python virtual environment
 python -m venv .venv
 
 # Activate virtual environment
-# Windows:
-.venv\Scripts\activate
+# Windows PowerShell:
+.\.venv\Scripts\Activate.ps1
+# Windows CMD:
+.venv\Scripts\activate.bat
 # macOS/Linux:
 source .venv/bin/activate
 
@@ -241,23 +318,25 @@ source .venv/bin/activate
 pip install -r requirements.txt --pre
 
 # Login to Azure (for authentication)
-az login
+az login --identity
 
 # Or use managed identity (for Azure ML workspace)
-az login --identity
+az login --identity --identity
 ```
 
-### Module 3 Setup (10 minutes)
+### Module 4 Setup (10 minutes)
 ```bash
-# Navigate to Multi_Agent_Demo directory
-cd Multi_Agent_Demo/
+# Navigate to Multi_Agent directory
+cd Multi_Agent_Workshop/
 
 # Create Python virtual environment
 python -m venv .venv
 
 # Activate virtual environment
-# Windows:
-.venv\Scripts\activate
+# Windows PowerShell:
+.\.venv\Scripts\Activate.ps1
+# Windows CMD:
+.venv\Scripts\activate.bat
 # macOS/Linux:
 source .venv/bin/activate
 
@@ -269,10 +348,10 @@ pip install -r requirements.txt
 # AZURE_OPENAI_CHAT_DEPLOYMENT_NAME=gpt-4o
 
 # Login to Azure (for authentication)
-az login
+az login --identity
 
 # Or use managed identity (for Azure ML workspace)
-az login --identity
+az login --identity --identity
 ```
 
 ## 📚 Additional Resources
@@ -311,14 +390,14 @@ az login --identity
 
 **Module 2:**
 - **Python dependency errors?** → Ensure Python 3.10+ and virtual environment activated
-- **Authentication fails?** → Run `az login` (or `az login --identity` in Azure ML workspace)
+- **Authentication fails?** → Run `az login --identity` (or `az login --identity --identity` in Azure ML workspace)
 - **MCP server won't start?** → Check port 5000 is available
 
 **Module 3:**
 - **Azure OpenAI errors?** → Set AZURE_OPENAI_ENDPOINT and AZURE_OPENAI_CHAT_DEPLOYMENT_NAME
 - **Agent not responding?** → Check deployment quota and throttling limits
 - **Import errors?** → Install agent-framework: `pip install agent-framework`
-- **Authentication fails?** → Run `az login` (or `az login --identity` in Azure ML workspace)
+- **Authentication fails?** → Run `az login --identity` (or `az login --identity --identity` in Azure ML workspace)
 
 See individual module READMEs for detailed troubleshooting.
 

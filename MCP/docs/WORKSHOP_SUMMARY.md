@@ -124,7 +124,7 @@ Participants will learn to:
    pip install -r requirements.txt --pre
    
    # Authenticate
-   az login --identity  # For Azure ML Notebooks
+   az login --identity --identity  # For Azure ML Notebooks
    
    # Start server (Terminal 1)
    python server.py
@@ -242,7 +242,7 @@ Teaching?
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt --pre
-az login --identity
+az login --identity --identity
 
 # Terminal 1: Start MCP Server
 cd /path/to/ERM_Agents_Workshop/MCP

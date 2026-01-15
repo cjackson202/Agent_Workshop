@@ -105,7 +105,7 @@ Step 5: Advanced (20 min)
 → Check port 8080 isn't in use: `netstat -ano | findstr :8080`
 
 ### "Azure authentication failed"
-→ Run: `az login` then `az account show`
+→ Run: `az login --identity` then `az account show`
 
 ### "I'm stuck on Exercise X"
 → See [SOLUTIONS.md](SOLUTIONS.md) for complete code
@@ -139,7 +139,7 @@ python test_mcp.py
 python get_agent_mi.py
 
 # Azure Login (Managed Identity for Azure ML)
-az login --identity
+az login --identity --identity
 az account show
 ```
 
@@ -229,7 +229,7 @@ Test with:
 ```bash
 python --version  # Should be 3.10+
 az --version      # Should show Azure CLI
-az login --identity  # Authenticate with managed identity
+az login --identity --identity  # Authenticate with managed identity
 ```
 
 ---

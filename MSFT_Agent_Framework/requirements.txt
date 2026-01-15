@@ -1,0 +1,4 @@
+agent-framework
+azure-ai-projects
+azure-identity
+azure-monitor-opentelemetry

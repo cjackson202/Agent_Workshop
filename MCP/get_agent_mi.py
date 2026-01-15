@@ -10,7 +10,7 @@ Prerequisites:
 1. An existing agent created in Azure AI Foundry portal
 2. The agent's ID (copy from portal: Agents → Your Agent → Agent ID)
 3. MCP server running (python server.py in another terminal)
-4. Azure CLI authenticated (az login)
+4. Azure CLI authenticated (az login --identity)
 
 Workshop Usage:
 1. First, create your agent in Azure AI Foundry portal:
@@ -124,6 +124,10 @@ async def main():
                 print("Chatting with your existing agent + MCP tools")
                 print("Type 'exit', 'quit', or 'q' to end")
                 print("="*60 + "\n")
+
+                # ==================================================================
+                # CREATE A NEW THREAD FOR CONTEXTUAL CHAT HERE
+                # ==================================================================
                 
                 while True:
                     try:
@@ -142,7 +146,7 @@ async def main():
                         # Run the agent with user's query
                         # The agent will automatically use MCP tools when needed
                         print("\n🤖 Assistant: ", end="", flush=True)
-                        result = await agent.run(user_input)
+                        result = await agent.run(user_input) # add thread id here if needed (`thread_id=thread_id`)
                         print(result.text)
                         print()  # Extra newline for readability
                         

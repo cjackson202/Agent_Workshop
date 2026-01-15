@@ -14,7 +14,7 @@ cd /path/to/ERM_Agents_Workshop/MCP
 pip install -r requirements.txt --pre
 
 # Authenticate with Azure (Managed Identity)
-az login --identity
+az login --identity --identity
 ```
 
 ### 2️⃣ Start the MCP Server (30 seconds)
@@ -79,7 +79,7 @@ Before the workshop, participants should:
 - [ ] Have access to Azure ML Notebooks
 - [ ] Have Python 3.10+ available in Azure ML
 - [ ] Have Azure CLI available in notebook environment
-- [ ] Authenticate with `az login --identity`
+- [ ] Authenticate with `az login --identity --identity`
 - [ ] Have access to an Azure AI Foundry project
 - [ ] Have a GPT-4o or GPT-4o-mini model deployed
 - [ ] Clone this repository to Azure ML workspace
@@ -94,7 +94,7 @@ Before the workshop, participants should:
 **Solution:** Make sure `python server.py` is running in another terminal
 
 ### Problem: Azure authentication errors
-**Solution:** Run `az login --identity` (for Azure ML Notebooks) and verify with `az account show`
+**Solution:** Run `az login --identity --identity` (for Azure ML Notebooks) and verify with `az account show`
 
 ### Problem: "Module not found" errors
 **Solution:** Run `pip install -r requirements.txt --pre`
